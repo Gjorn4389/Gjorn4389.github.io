@@ -87,3 +87,18 @@ function switch2windows() {
     reboot
 }
 ```
+
+# apt install无法获取dpkg lock
+``` shell
+function releaseDpkgLock() {
+    sudo rm -f /var/cache/apt/archives/lock /var/lib/dpkg/lock
+}
+```
+
+# 开机挂载硬盘
+修改 `/etc/fstab`，使用`blkid`查看每个硬盘的信息
+
+```
+/dev/sda1 /mnt/repo1 ntfs defaults 0 0
+/dev/sdb1 /mnt/repo2 ntfs defaults 0 0
+```
