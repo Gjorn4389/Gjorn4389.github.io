@@ -1,0 +1,707 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Gjorn">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="模型演变 完全虚拟化: 根据硬件设备规范模拟，对Guest透明，不需要修改 Vhost方案: 将数据面迁移到内核空间 Virtio协议: 半虚拟化，使用Virtqueue传输数据 VT-d: Intel 在硬件层面提供支持，包含DMA重映射、中断重映射等安全方案 SR-IOV(Single Root I&#x2F;O Virtualization): 将一个PCIe设备虚拟成多个功能设备给不同虚机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Virt Device">
+<meta property="og:url" content="https://gjorn4389.github.io/2023/12/10/virtio/VirtDevice/index.html">
+<meta property="og:site_name" content="HandBook">
+<meta property="og:description" content="模型演变 完全虚拟化: 根据硬件设备规范模拟，对Guest透明，不需要修改 Vhost方案: 将数据面迁移到内核空间 Virtio协议: 半虚拟化，使用Virtqueue传输数据 VT-d: Intel 在硬件层面提供支持，包含DMA重映射、中断重映射等安全方案 SR-IOV(Single Root I&#x2F;O Virtualization): 将一个PCIe设备虚拟成多个功能设备给不同虚机">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/vfio/cpu_pci_topology.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/kvmtool_pci_bar.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/kvmtool_dma_map.png">
+<meta property="article:published_time" content="2023-12-10T01:26:43.000Z">
+<meta property="article:modified_time" content="2025-07-19T03:27:20.718Z">
+<meta property="article:author" content="Gjorn">
+<meta property="article:tag" content="protocol">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/vfio/cpu_pci_topology.png">
+  
+  
+  
+  <title>Virt Device - HandBook</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"gjorn4389.github.io","root":"/","version":"1.9.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Virt Device"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-10 09:26" pubdate>
+          2023年12月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          668 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Virt Device</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="模型演变"><a href="#模型演变" class="headerlink" title="模型演变"></a>模型演变</h1><ul>
+<li>完全虚拟化: 根据硬件设备规范模拟，对Guest透明，不需要修改</li>
+<li><code>Vhost</code>方案: 将数据面迁移到内核空间</li>
+<li><code>Virtio</code>协议: 半虚拟化，使用<code>Virtqueue</code>传输数据</li>
+<li><code>VT-d</code>: Intel 在硬件层面提供支持，包含DMA重映射、中断重映射等安全方案</li>
+<li><code>SR-IOV</code>(Single Root I&#x2F;O Virtualization): 将一个PCIe设备虚拟成多个功能设备给不同虚机访问使用</li>
+</ul>
+<h1 id="PCI配置空间"><a href="#PCI配置空间" class="headerlink" title="PCI配置空间"></a>PCI配置空间</h1><h2 id="PCI配置空间-1"><a href="#PCI配置空间-1" class="headerlink" title="PCI配置空间"></a>PCI配置空间</h2><p>TODO</p>
+<h2 id="PCI设备板上存储空间"><a href="#PCI设备板上存储空间" class="headerlink" title="PCI设备板上存储空间"></a>PCI设备板上存储空间</h2><ol>
+<li>PCI设备提出需要的地址空间大小、板上内存映射类型(内存地址、IO地址)，将其记录在 BAR(Base Address Registers) 中。</li>
+<li>由 BIOS(或UEFI) 在系统初始化，访问 <code>BAR</code> 统一划分地址空间<blockquote>
+<p>Q: 热插设备什么时候分配地址空间</p>
+</blockquote>
+</li>
+<li>PCI拓扑关系： cpu &lt;—&gt; Host Bridge &lt;—&gt; pci bus &lt;—&gt; PCI Device<br> <img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/vfio/cpu_pci_topology.png" srcset="/img/loading.gif" lazyload alt="PCI拓扑关系"></li>
+<li>确定访问设备：管脚 <code>IDSEL</code> 选定目标 PCI 设备，仅需要确定 <code>Function Number</code> 和 <code>Registers Number</code></li>
+</ol>
+<h2 id="模拟PCI设备配置空间"><a href="#模拟PCI设备配置空间" class="headerlink" title="模拟PCI设备配置空间"></a>模拟PCI设备配置空间</h2><h3 id="确定寄存器地址"><a href="#确定寄存器地址" class="headerlink" title="确定寄存器地址"></a>确定寄存器地址</h3><blockquote>
+<p>kvmtool 实现</p>
+</blockquote>
+<ol>
+<li>计算 pci_config_address_ptr &#x3D; &amp;pci_config_address + addr - PCI_CONFIG_ADDRESS</li>
+<li>通过 pci_config_address_ptr 来修改配置空间</li>
+</ol>
+<h2 id="模拟PCI设备BAR"><a href="#模拟PCI设备BAR" class="headerlink" title="模拟PCI设备BAR"></a>模拟PCI设备BAR</h2><ol>
+<li><code>pci_get_mmio_block</code> 为PCI设备分配内存地址：内存对齐、记录 mmio_blocks 方便后续分配<br> <img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/kvmtool_pci_bar.png" srcset="/img/loading.gif" lazyload alt="kvmtool_pci_bar"></li>
+<li><code>device__register</code> 将设备注册到 rbtree上，根据 dev_num 来排序，方便检索</li>
+</ol>
+<h1 id="设备透传"><a href="#设备透传" class="headerlink" title="设备透传"></a>设备透传</h1><h2 id="SR-IVO-标准"><a href="#SR-IVO-标准" class="headerlink" title="SR-IVO 标准"></a>SR-IVO 标准</h2><blockquote>
+<p>Single Root I&#x2F;O Virtualization and Sharing</p>
+</blockquote>
+<ol>
+<li>设备分为 PF(Physical Function) 和 VF(Virtual Function)，硬件实现，一个SR-IOV可以支持多个VF，每个VF透传给Guest</li>
+<li>每个VF都有独立的用于数据传输的存储空间、队列、中断及命令处理单元，由VMM管理</li>
+<li>虚拟机通过VF驱动直接访问物理设备，也可以通过SR-IOV设备的PF结构共享物理设备</li>
+</ol>
+<h2 id="虚拟配置空间"><a href="#虚拟配置空间" class="headerlink" title="虚拟配置空间"></a>虚拟配置空间</h2><blockquote>
+<p>安全考虑Guest不能直接修改配置空间，VMM作为代理对配置空间进行修改</p>
+</blockquote>
+<ol>
+<li>Host的BIOS会分配PCI设备的BAR空间，Guest不能直接访问，需要VMM负责映射</li>
+<li>VF-BAR —&gt; HPA —&gt; GPA，VMM只需要完成GPA到HVA的映射</li>
+<li>配置空间与数据面隔离，不会影响数据效率</li>
+</ol>
+<h2 id="DMA重映射"><a href="#DMA重映射" class="headerlink" title="DMA重映射"></a>DMA重映射</h2><ol>
+<li>背景：防止 Guest DMA 恶意破坏内存</li>
+<li>原理：<ul>
+<li>为 Guest 建立页表（DMA Table，由多个设备共享），页表限制了设备可以访问的内存</li>
+<li>DMA重映射硬件 根据BDF号确定页表，找到HPA</li>
+<li>DMA重映射硬件 为外设进行IO地址翻译，也叫IOMMU</li>
+</ul>
+</li>
+<li>kvmtool 实现：<ul>
+<li>kvmtool 为 Guest准备多个内存段，提供给外设使用</li>
+<li><code>VFIO_IOMMU_MAP_DMA</code>：在DMA重映射页表中建立映射关系</li>
+<li>内核通知外设进行DMA前，需要把虚拟地址转换为物理地址（通过dma_map的iova、vaddr）</li>
+<li>内核创建 IOMMU 的页表，会将VA转成PA，其中记录的是GPA到HPA的映射<br> <img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/kvmtool_dma_map.png" srcset="/img/loading.gif" lazyload alt="kvmtool中的dma映射"></li>
+</ul>
+</li>
+</ol>
+<h2 id="中断重映射"><a href="#中断重映射" class="headerlink" title="中断重映射"></a>中断重映射</h2><ol>
+<li>背景：避免虚机向其他虚机发送恶意中断</li>
+<li>原理：硬件中断重映射单元 对中断进行有效性验证，以中断号为索引查询中断重映射表，代替外设转发中断信号，目的虚机由BDF确定</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/VirtMachine/" class="category-chain-item">VirtMachine</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/protocol/" class="print-no-link">#protocol</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Virt Device</div>
+      <div>https://gjorn4389.github.io/2023/12/10/virtio/VirtDevice/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Gjorn</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/10/web_dev/CSS-Basic/" title="CSS Basic">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSS Basic</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
