@@ -6,6 +6,7 @@ tags:
     - linux
     - kernel 6.15
 ---
+> 知乎问题：[Linux kernel中有哪些奇技淫巧](https://www.zhihu.com/question/471637144/answer/124475482866) 有感
 
 # container_of 根据成员变量地址求结构体首地址
 > 文件位置：[include/linux/container_of.h](https://github.com/torvalds/linux/blob/v6.15/include/linux/container_of.h)
@@ -61,6 +62,19 @@ tags:
 /* old version in kernel */
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *) 0)->MEMBER)
 ```
+
+# 链表 Linked
+
+# kfifo: 无锁环形队列
+
+# 读写信号量、RCU
+
+# 静态分支预测、jump table
+
+
+# kthread_run
+
+# CFS调度器
 
 # Reference
 [container_of 函数详解](https://blog.csdn.net/u011029104/article/details/136190755)
