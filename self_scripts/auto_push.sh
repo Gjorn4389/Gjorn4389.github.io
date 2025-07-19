@@ -3,7 +3,7 @@ time=$(date +"%Y-%m-%d %H:%M:%S")
 commit_message="update posts at $time.$message"
 
 # 添加文件到暂存区
-git add ..
+git add -A
 echo "git add done"
 
 # 创建提交
