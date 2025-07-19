@@ -24,7 +24,7 @@
 <meta property="og:description" content="知乎问题：Linux kernel中有哪些奇技淫巧 有感  container_of 根据成员变量地址求结构体首地址 文件位置：include&#x2F;linux&#x2F;container_of.h  12345678910111213141516#define typeof_member(T, m)	typeof(((T*)0)-&gt;m)&#x2F;** * container_of - ca">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-12T05:33:26.000Z">
-<meta property="article:modified_time" content="2025-07-19T03:27:20.718Z">
+<meta property="article:modified_time" content="2025-07-19T13:02:44.925Z">
 <meta property="article:author" content="Gjorn">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="kernel 6.15">
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          193 字
+          341 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          2 分钟
+          3 分钟
         
       </span>
     
@@ -304,7 +304,42 @@
 </blockquote>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> offsetof(TYPE, MEMBER)	__builtin_offsetof(TYPE, MEMBER)</span><br><br><span class="hljs-comment">/* old version in kernel */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> offsetof(TYPE, MEMBER) ((size_t) &amp;((TYPE *) 0)-&gt;MEMBER)</span><br></code></pre></td></tr></table></figure>
 
-<h1 id="链表-Linked"><a href="#链表-Linked" class="headerlink" title="链表 Linked"></a>链表 Linked</h1><h1 id="kfifo-无锁环形队列"><a href="#kfifo-无锁环形队列" class="headerlink" title="kfifo: 无锁环形队列"></a>kfifo: 无锁环形队列</h1><h1 id="读写信号量、RCU"><a href="#读写信号量、RCU" class="headerlink" title="读写信号量、RCU"></a>读写信号量、RCU</h1><h1 id="静态分支预测、jump-table"><a href="#静态分支预测、jump-table" class="headerlink" title="静态分支预测、jump table"></a>静态分支预测、jump table</h1><h1 id="kthread-run"><a href="#kthread-run" class="headerlink" title="kthread_run"></a>kthread_run</h1><h1 id="CFS调度器"><a href="#CFS调度器" class="headerlink" title="CFS调度器"></a>CFS调度器</h1><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011029104/article/details/136190755">container_of 函数详解</a></p>
+<h1 id="链表-List"><a href="#链表-List" class="headerlink" title="链表 List"></a>链表 List</h1><blockquote>
+<p>文件位置: <a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/v6.15/include/linux/list.h">include&#x2F;linux&#x2F;list.h</a></p>
+</blockquote>
+<h2 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/v6.15/tools/arch/x86/include/asm/barrier.h">tools&#x2F;arch&#x2F;x86&#x2F;include&#x2F;asm&#x2F;barrier.h</a></p>
+</blockquote>
+<ol>
+<li>防止编译器优化</li>
+<li>保证内存可见性</li>
+<li>防止指令重排序</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> mb()	asm volatile(<span class="hljs-string">&quot;mfence&quot;</span> ::: <span class="hljs-string">&quot;memory&quot;</span>)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> rmb()	asm volatile(<span class="hljs-string">&quot;lfence&quot;</span> ::: <span class="hljs-string">&quot;memory&quot;</span>)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> wmb()	asm volatile(<span class="hljs-string">&quot;sfence&quot;</span> ::: <span class="hljs-string">&quot;memory&quot;</span>)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> smp_rmb() barrier()</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> smp_wmb() barrier()</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> smp_mb()  asm volatile(<span class="hljs-string">&quot;lock; addl $0,-132(%%rsp)&quot;</span> ::: <span class="hljs-string">&quot;memory&quot;</span>, <span class="hljs-string">&quot;cc&quot;</span>)</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="WRITE-ONCE-写入变量"><a href="#WRITE-ONCE-写入变量" class="headerlink" title="WRITE_ONCE 写入变量"></a>WRITE_ONCE 写入变量</h2><blockquote>
+<p>文件位置: <a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/v6.15/tools/include/linux/compiler.h">tools&#x2F;include&#x2F;linux&#x2F;compiler.h</a></p>
+</blockquote>
+<blockquote>
+<p>为什么需要 WRITE_ONCE</p>
+<ol>
+<li>防止编译器优化：编译器可能将单个写入拆分成多次访问，这在并发环境中会导致问题</li>
+<li>保证写入完整性：确保写入操作不会被中断</li>
+<li>内存可见性：确保写入对其他CPU核心立即可见</li>
+</ol>
+</blockquote>
+<p><code>union &#123; typeof(x) __val; char __c[1]; &#125;</code>: 即是数据val、又是指针c，因为是<code>union</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> WRITE_ONCE(x, val)				\</span><br><span class="hljs-meta">(&#123;							\</span><br><span class="hljs-meta">	union &#123; typeof(x) __val; char __c[1]; &#125; __u = &#123; .__val = (val) &#125;; 	\</span><br><span class="hljs-meta">	__write_once_size(&amp;(x), __u.__c, sizeof(x));	\</span><br><span class="hljs-meta">	__u.__val;					\</span><br><span class="hljs-meta">&#125;)</span><br><br><span class="hljs-type">static</span> __always_inline <span class="hljs-type">void</span> __write_once_size(<span class="hljs-keyword">volatile</span> <span class="hljs-type">void</span> *p, <span class="hljs-type">void</span> *res, <span class="hljs-type">int</span> size)<br>&#123;<br>	<span class="hljs-keyword">switch</span> (size) &#123;<br>	<span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: *(<span class="hljs-keyword">volatile</span>  <span class="hljs-type">__u8_alias_t</span> *) p = *(<span class="hljs-type">__u8_alias_t</span>  *) res; <span class="hljs-keyword">break</span>;<br>	<span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: *(<span class="hljs-keyword">volatile</span> <span class="hljs-type">__u16_alias_t</span> *) p = *(<span class="hljs-type">__u16_alias_t</span> *) res; <span class="hljs-keyword">break</span>;<br>	<span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: *(<span class="hljs-keyword">volatile</span> <span class="hljs-type">__u32_alias_t</span> *) p = *(<span class="hljs-type">__u32_alias_t</span> *) res; <span class="hljs-keyword">break</span>;<br>	<span class="hljs-keyword">case</span> <span class="hljs-number">8</span>: *(<span class="hljs-keyword">volatile</span> <span class="hljs-type">__u64_alias_t</span> *) p = *(<span class="hljs-type">__u64_alias_t</span> *) res; <span class="hljs-keyword">break</span>;<br>	<span class="hljs-keyword">default</span>:<br>		barrier();<br>		__builtin_memcpy((<span class="hljs-type">void</span> *)p, (<span class="hljs-type">const</span> <span class="hljs-type">void</span> *)res, size);<br>		barrier();<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="READ-ONCE-读取变量"><a href="#READ-ONCE-读取变量" class="headerlink" title="READ_ONCE 读取变量"></a>READ_ONCE 读取变量</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> READ_ONCE(x)					\</span><br><span class="hljs-meta">(&#123;							\</span><br><span class="hljs-meta">	union &#123; typeof(x) __val; char __c[1]; &#125; __u = &#123; .__c = &#123; 0 &#125; &#125;;			\</span><br><span class="hljs-meta">	__read_once_size(&amp;(x), __u.__c, sizeof(x));	\</span><br><span class="hljs-meta">	__u.__val;					\</span><br><span class="hljs-meta">&#125;)</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="初始化链表头"><a href="#初始化链表头" class="headerlink" title="初始化链表头"></a>初始化链表头</h2><blockquote>
+<p>链表头是一个空节点，没有含义</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LIST_HEAD_INIT(name) &#123; &amp;(name), &amp;(name) &#125;</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LIST_HEAD(name) struct list_head name = LIST_HEAD_INIT(name)</span><br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">INIT_LIST_HEAD</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> list_head *<span class="hljs-built_in">list</span>)</span><br>&#123;<br>	WRITE_ONCE(<span class="hljs-built_in">list</span>-&gt;next, <span class="hljs-built_in">list</span>);<br>	WRITE_ONCE(<span class="hljs-built_in">list</span>-&gt;prev, <span class="hljs-built_in">list</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h1 id="kfifo-无锁环形队列"><a href="#kfifo-无锁环形队列" class="headerlink" title="kfifo: 无锁环形队列"></a>kfifo: 无锁环形队列</h1><h1 id="读写信号量、RCU"><a href="#读写信号量、RCU" class="headerlink" title="读写信号量、RCU"></a>读写信号量、RCU</h1><h1 id="静态分支预测、jump-table"><a href="#静态分支预测、jump-table" class="headerlink" title="静态分支预测、jump table"></a>静态分支预测、jump table</h1><h1 id="kthread-run"><a href="#kthread-run" class="headerlink" title="kthread_run"></a>kthread_run</h1><h1 id="CFS调度器"><a href="#CFS调度器" class="headerlink" title="CFS调度器"></a>CFS调度器</h1><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011029104/article/details/136190755">container_of 函数详解</a></p>
 
                 
               </div>
