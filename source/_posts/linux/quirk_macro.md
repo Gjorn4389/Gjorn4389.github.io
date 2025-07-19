@@ -63,7 +63,81 @@ tags:
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *) 0)->MEMBER)
 ```
 
-# 链表 Linked
+# 链表 List
+> 文件位置: [include/linux/list.h](https://github.com/torvalds/linux/blob/v6.15/include/linux/list.h)
+
+## 内存屏障
+> [tools/arch/x86/include/asm/barrier.h](https://github.com/torvalds/linux/blob/v6.15/tools/arch/x86/include/asm/barrier.h)
+
+1. 防止编译器优化
+2. 保证内存可见性
+3. 防止指令重排序
+
+```c
+#define mb()	asm volatile("mfence" ::: "memory")
+#define rmb()	asm volatile("lfence" ::: "memory")
+#define wmb()	asm volatile("sfence" ::: "memory")
+#define smp_rmb() barrier()
+#define smp_wmb() barrier()
+#define smp_mb()  asm volatile("lock; addl $0,-132(%%rsp)" ::: "memory", "cc")
+```
+
+## WRITE_ONCE 写入变量
+> 文件位置: [tools/include/linux/compiler.h](https://github.com/torvalds/linux/blob/v6.15/tools/include/linux/compiler.h)
+
+>为什么需要 WRITE_ONCE
+>1. 防止编译器优化：编译器可能将单个写入拆分成多次访问，这在并发环境中会导致问题
+>2. 保证写入完整性：确保写入操作不会被中断
+>3. 内存可见性：确保写入对其他CPU核心立即可见
+
+`union { typeof(x) __val; char __c[1]; }`: 即是数据val、又是指针c，因为是`union`
+
+```c
+#define WRITE_ONCE(x, val)				\
+({							\
+	union { typeof(x) __val; char __c[1]; } __u = { .__val = (val) }; 	\
+	__write_once_size(&(x), __u.__c, sizeof(x));	\
+	__u.__val;					\
+})
+
+static __always_inline void __write_once_size(volatile void *p, void *res, int size)
+{
+	switch (size) {
+	case 1: *(volatile  __u8_alias_t *) p = *(__u8_alias_t  *) res; break;
+	case 2: *(volatile __u16_alias_t *) p = *(__u16_alias_t *) res; break;
+	case 4: *(volatile __u32_alias_t *) p = *(__u32_alias_t *) res; break;
+	case 8: *(volatile __u64_alias_t *) p = *(__u64_alias_t *) res; break;
+	default:
+		barrier();
+		__builtin_memcpy((void *)p, (const void *)res, size);
+		barrier();
+	}
+}
+```
+
+## READ_ONCE 读取变量
+```c
+#define READ_ONCE(x)					\
+({							\
+	union { typeof(x) __val; char __c[1]; } __u = { .__c = { 0 } };			\
+	__read_once_size(&(x), __u.__c, sizeof(x));	\
+	__u.__val;					\
+})
+```
+
+## 初始化链表头
+> 链表头是一个空节点，没有含义
+```c
+#define LIST_HEAD_INIT(name) { &(name), &(name) }
+#define LIST_HEAD(name) struct list_head name = LIST_HEAD_INIT(name)
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	WRITE_ONCE(list->next, list);
+	WRITE_ONCE(list->prev, list);
+}
+```
+
 
 # kfifo: 无锁环形队列
 
