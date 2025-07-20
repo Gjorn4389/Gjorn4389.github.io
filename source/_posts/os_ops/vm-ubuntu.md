@@ -12,14 +12,16 @@ tags:
 ```
 2. 需要cdrom引导安装系统
 ```xml
-<os>
-    <bootmenu enable='yes' timeout='5000'/>
-</os>
-
+<disk type='file' device='disk'>
+    <driver name='qemu' type='raw' cache='none' io='native'/>
+    <source file='/srv/vm/img/openEuler.raw'/>
+    <target dev='vda' bus='virtio'/>
+    <boot order='1'/>
+</disk>
 <disk type='file' device='cdrom'>
-    <driver name='qemu'/>
-    <source file='/srv/vms/iso/CentOS-7-x86_64-Minimal-2009.iso'/>
-    <target dev='hdb' bus='ide'/>
+    <driver name='qemu' type='raw' cache='none' io='native'/>
+    <source file='/srv/vm/img/openEuler-24.03-LTS-SP2-x86_64-dvd.iso'/>
+    <target dev='sdb' bus='scsi'/>
     <readonly/>
     <boot order='2'/>
 </disk>
