@@ -33,9 +33,9 @@ apt update
 ```
 
 # 安装中文输入法
-apt-get install -y fcitx5 fcitx5-configtool fcitx5-chinese-addons
-mkdir -p ~/.config/autostart
-touch  ~/.config/autostart/fcitx5.desktop
+`apt-get install -y fcitx5 fcitx5-configtool fcitx5-chinese-addons`
+`mkdir -p ~/.config/autostart`
+`touch  ~/.config/autostart/fcitx5.desktop`
 ```
 [Desktop Entry]
 Type=Application
@@ -43,7 +43,7 @@ Name=Fcitx5
 Exec=/usr/bin/fcitx5
 X-GNOME-Autostart-enabled=true
 ```
-chmod +x ~/.config/autostart/fcitx5.desktop
+`chmod +x ~/.config/autostart/fcitx5.desktop`
 
 # 安装nvidia驱动
 1. 在bios中配置使用核显
@@ -64,6 +64,45 @@ chmod +x ~/.config/autostart/fcitx5.desktop
 ## CUDA
 安装: `apt install nvidia-cuda-toolkit`
 检查: `nvcc --version`
+
+## Nvidia Container Toolkit
+> [Nvidia Official Guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+1. Configure the production repository:
+```shell
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+2. Update the packages list from the repository:
+`sudo apt-get update`
+3. Install the NVIDIA Container Toolkit packages:
+```shell
+export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
+sudo apt-get install -y \
+    nvidia-container-toolkit=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    nvidia-container-toolkit-base=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    libnvidia-container-tools=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    libnvidia-container1=${NVIDIA_CONTAINER_TOOLKIT_VERSION}
+```
+4. 配置Docker使用Nvidia运行时
+```shell
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+5. 验证是否可用
+`sudo docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu24.04 nvidia-smi`
+
+## CUDNN
+> CUda Deep Neural Network
+安装: `apt install nvidia-cudnn`
+验证:
+```python
+from torch.backends import cudnn
+print(cudnn.is_available())  #返回True说明已经安装了cuDNN
+```
+
 
 # gnome新窗口生成在中央
 `gsettings set org.gnome.mutter center-new-windows true`
