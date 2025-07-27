@@ -16,24 +16,23 @@
   <meta name="author" content="Gjorn">
   <meta name="keywords" content="">
   
-    <meta name="description" content="热插内存主要流程注册 callbackvirConnectDomainEventRegisterAny|– qemuConnectDomainEventRegisterAny    |– virDomainEventStateRegisterID(conn, driver-&gt;domainEventState, …)        |– virObjectEventStateRegisterI">
+    <meta name="description" content="kvm_init 函数 确定有多少个CPU：num_cpus[SMP, hotpluggable] KVMParkedVcpu { vcpu_id, kvm_fd } 列表记录vcpu 检查KVM版本 kvm创建虚机，返回一个fd：kvm_ioctl(s, KVM_CREATE_VM, type);">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Memory Hotplug">
-<meta property="og:url" content="https://gjorn4389.github.io/2024/02/27/libvirt/memory_hotplug/index.html">
+<meta property="og:title" content="kvm_init">
+<meta property="og:url" content="https://gjorn4389.github.io/2024/07/17/virtual/kvm_init/index.html">
 <meta property="og:site_name" content="HandBook">
-<meta property="og:description" content="热插内存主要流程注册 callbackvirConnectDomainEventRegisterAny|– qemuConnectDomainEventRegisterAny    |– virDomainEventStateRegisterID(conn, driver-&gt;domainEventState, …)        |– virObjectEventStateRegisterI">
+<meta property="og:description" content="kvm_init 函数 确定有多少个CPU：num_cpus[SMP, hotpluggable] KVMParkedVcpu { vcpu_id, kvm_fd } 列表记录vcpu 检查KVM版本 kvm创建虚机，返回一个fd：kvm_ioctl(s, KVM_CREATE_VM, type);">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-02-27T05:33:26.000Z">
+<meta property="article:published_time" content="2024-07-17T05:33:26.000Z">
 <meta property="article:modified_time" content="2025-07-19T03:27:20.718Z">
 <meta property="article:author" content="Gjorn">
-<meta property="article:tag" content="libvirt">
-<meta property="article:tag" content="hotplug">
-<meta property="article:tag" content="memory">
+<meta property="article:tag" content="kvm">
+<meta property="article:tag" content="qemu">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Memory Hotplug - HandBook</title>
+  <title>kvm_init - HandBook</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Memory Hotplug"></span>
+            <span id="subtitle" data-typed-text="kvm_init"></span>
           
         </div>
 
@@ -210,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-02-27 13:33" pubdate>
-          2024年2月27日 下午
+        <time datetime="2024-07-17 13:33" pubdate>
+          2024年7月17日 下午
         </time>
       </span>
     
@@ -222,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          81 字
+          24 字
         
       </span>
     
@@ -270,18 +269,17 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Memory Hotplug</h1>
+            <h1 id="seo-header">kvm_init</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="热插内存主要流程"><a href="#热插内存主要流程" class="headerlink" title="热插内存主要流程"></a>热插内存主要流程</h1><h2 id="注册-callback"><a href="#注册-callback" class="headerlink" title="注册 callback"></a>注册 callback</h2><p>virConnectDomainEventRegisterAny<br>|– qemuConnectDomainEventRegisterAny<br>    |– virDomainEventStateRegisterID(conn, driver-&gt;domainEventState, …)<br>        |– virObjectEventStateRegisterID<br>            |– virEventAddTimeout(-1, <strong>virObjectEventTimer</strong>, state)<br>            |– virObjectEventCallbackListAddID                 &lt;— 在conn中添加callback</p>
-<h2 id="添加事件"><a href="#添加事件" class="headerlink" title="添加事件"></a>添加事件</h2><p>|– qemuDomainAttachDeviceLiveAndConfig<br>|– qemuDomainAttachDeviceLive<br>|– qemuDomainAttachMemory<br>    |– virDomainMemoryInsert<br>    |– event &#x3D; virDomainEventDeviceAddedNewFromObj(vm, objalias);      构造event<br>        |– virDomainEventDeviceAddedClass, <strong>VIR_DOMAIN_EVENT_ID_DEVICE_ADDED</strong><br>    |– virObjectEventStateQueue(<strong>driver-&gt;domainEventState</strong>, event);      等待分发<br>        |– virObjectEventStateQueueRemote<br>            |– virObjectEventQueuePush</p>
-<h2 id="分发事件"><a href="#分发事件" class="headerlink" title="分发事件"></a>分发事件</h2><p>|– virObjectEventTimer<br>|– virObjectEventStateFlush   &lt;— Timer 到期之后会将调用该函数<br>    |– virEventUpdateTimeout<br>    |– virObjectEventStateQueueDispatch<br>        |– virObjectEventStateDispatchCallbacks<br>            |– 在callback池中找匹配的event_id，确定event对应的callback<br>            |– event-&gt;dispatch(cb-&gt;conn, event, cb-&gt;cb, cb-&gt;opaque);<br>    |– virObjectEventCallbackListPurgeMarked<br>    |– virObjectEventStateCleanupTimer</p>
-<h2 id="调用callback的流程"><a href="#调用callback的流程" class="headerlink" title="调用callback的流程"></a>调用callback的流程</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">&#123;<br>    REMOTE_PROC_DOMAIN_EVENT_CALLBACK_DEVICE_ADDED,<br>    remoteDomainBuildEventCallbackDeviceAdded,<br>    <span class="hljs-keyword">sizeof</span>(remote_domain_event_callback_device_added_msg),<br>    (<span class="hljs-type">xdrproc_t</span>)xdr_remote_domain_event_callback_device_added_msg<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="事件的callback注册"><a href="#事件的callback注册" class="headerlink" title="事件的callback注册"></a>事件的callback注册</h2><p>static virNetClientProgramEvent remoteEvents[]</p>
-<p>|– remoteDomainBuildEventCallbackDeviceAdded<br>    |– virDomainEventDeviceAddedNewFromDom<br>        |– virDomainEventDeviceAddedNew<br>        |– virDomainEventNew<br>        |– virObjectEventNew(klass, <strong>virDomainEventDispatchDefaultFunc</strong>, …)  &lt;— 这里注册了一个分发函数，找到对应的处理函数<br>    |– virObjectEventStateQueueRemote</p>
+                <h1 id="kvm-init-函数"><a href="#kvm-init-函数" class="headerlink" title="kvm_init 函数"></a>kvm_init 函数</h1><ol>
+<li>确定有多少个CPU：num_cpus[SMP, hotpluggable]</li>
+<li>KVMParkedVcpu { vcpu_id, kvm_fd } 列表记录vcpu</li>
+<li>检查KVM版本</li>
+<li>kvm创建虚机，返回一个fd：kvm_ioctl(s, KVM_CREATE_VM, type);</li>
+</ol>
 
                 
               </div>
@@ -300,7 +298,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/libvirt/" class="category-chain-item">libvirt</a>
+  <a href="/categories/qemu/" class="category-chain-item">qemu</a>
   
   
 
@@ -315,11 +313,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/libvirt/" class="print-no-link">#libvirt</a>
+        <a href="/tags/kvm/" class="print-no-link">#kvm</a>
       
-        <a href="/tags/hotplug/" class="print-no-link">#hotplug</a>
-      
-        <a href="/tags/memory/" class="print-no-link">#memory</a>
+        <a href="/tags/qemu/" class="print-no-link">#qemu</a>
       
     </div>
   
@@ -331,8 +327,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Memory Hotplug</div>
-      <div>https://gjorn4389.github.io/2024/02/27/libvirt/memory_hotplug/</div>
+      <div>kvm_init</div>
+      <div>https://gjorn4389.github.io/2024/07/17/virtual/kvm_init/</div>
     </div>
     <div class="license-meta">
       
@@ -344,7 +340,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年2月27日</div>
+          <div>2024年7月17日</div>
         </div>
       
       
@@ -376,9 +372,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/02/27/libvirt/libvirt_event/" title="libvirt event">
+                      <a href="/2024/08/16/kernel/bond/" title="bond">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">libvirt event</span>
+                        <span class="hidden-mobile">bond</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -386,8 +382,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/23/xv6/" title="xv6">
-                        <span class="hidden-mobile">xv6</span>
+                      <a href="/2024/03/13/virtual/vcpu_hotplug/" title="VCPU Hotplug">
+                        <span class="hidden-mobile">VCPU Hotplug</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

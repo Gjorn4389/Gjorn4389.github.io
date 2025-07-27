@@ -16,26 +16,26 @@
   <meta name="author" content="Gjorn">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Event 事件机制事件注册virEventRegisterDefaultImpl 基于 poll 的事件注册 必须使用 virEventRunDefaultImpl 来处理事件  注册Event的方法 virevent.c|– virEventGLibRegisterOnce|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRem">
+    <meta name="description" content="mux machine状态机变化      LACP_Activity: 端口在链路控制中的主从状态，0表示Passive, 1表示Active。       LACP_Timeout: 超时时间，0表示长超时，1表示短超时       Aggregation: 表示端口的聚合能力。 TRUE(1)表示链路是可聚合的，FALSE(0)表示链路是独立链路，不可聚合       Synchroniza">
 <meta property="og:type" content="article">
-<meta property="og:title" content="libvirt event">
-<meta property="og:url" content="https://gjorn4389.github.io/2024/02/27/libvirt/libvirt_event/index.html">
+<meta property="og:title" content="bond">
+<meta property="og:url" content="https://gjorn4389.github.io/2024/08/16/kernel/bond/index.html">
 <meta property="og:site_name" content="HandBook">
-<meta property="og:description" content="Event 事件机制事件注册virEventRegisterDefaultImpl 基于 poll 的事件注册 必须使用 virEventRunDefaultImpl 来处理事件  注册Event的方法 virevent.c|– virEventGLibRegisterOnce|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRem">
+<meta property="og:description" content="mux machine状态机变化      LACP_Activity: 端口在链路控制中的主从状态，0表示Passive, 1表示Active。       LACP_Timeout: 超时时间，0表示长超时，1表示短超时       Aggregation: 表示端口的聚合能力。 TRUE(1)表示链路是可聚合的，FALSE(0)表示链路是独立链路，不可聚合       Synchroniza">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virDomainEventDeviceAddedClass.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virObjectEvent_dispatch.png">
-<meta property="article:published_time" content="2024-02-27T05:33:26.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_mux_machine.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_port_valiables_def.png">
+<meta property="article:published_time" content="2024-08-16T05:33:26.000Z">
 <meta property="article:modified_time" content="2025-07-19T03:27:20.718Z">
 <meta property="article:author" content="Gjorn">
-<meta property="article:tag" content="libvirt">
-<meta property="article:tag" content="event">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="bond">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virDomainEventDeviceAddedClass.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_mux_machine.png">
   
   
   
-  <title>libvirt event - HandBook</title>
+  <title>bond - HandBook</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -201,7 +201,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="libvirt event"></span>
+            <span id="subtitle" data-typed-text="bond"></span>
           
         </div>
 
@@ -212,8 +212,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-02-27 13:33" pubdate>
-          2024年2月27日 下午
+        <time datetime="2024-08-16 13:33" pubdate>
+          2024年8月16日 下午
         </time>
       </span>
     
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          216 字
+          243 字
         
       </span>
     
@@ -235,7 +235,7 @@
         
         
         
-          2 分钟
+          3 分钟
         
       </span>
     
@@ -272,49 +272,54 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">libvirt event</h1>
+            <h1 id="seo-header">bond</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Event-事件机制"><a href="#Event-事件机制" class="headerlink" title="Event 事件机制"></a>Event 事件机制</h1><h2 id="事件注册"><a href="#事件注册" class="headerlink" title="事件注册"></a>事件注册</h2><h3 id="virEventRegisterDefaultImpl"><a href="#virEventRegisterDefaultImpl" class="headerlink" title="virEventRegisterDefaultImpl"></a>virEventRegisterDefaultImpl</h3><ol>
-<li>基于 poll 的事件注册</li>
-<li>必须使用 virEventRunDefaultImpl 来处理事件</li>
+                <h1 id="mux-machine状态机变化"><a href="#mux-machine状态机变化" class="headerlink" title="mux machine状态机变化"></a>mux machine状态机变化</h1><p><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_mux_machine.png" srcset="/img/loading.gif" lazyload alt="mux_machine"></p>
+<ol>
+<li><pre><code class="hljs">    LACP_Activity: 端口在链路控制中的主从状态，0表示Passive, 1表示Active。
+</code></pre>
+</li>
+<li><pre><code class="hljs">    LACP_Timeout: 超时时间，0表示长超时，1表示短超时
+</code></pre>
+</li>
+<li><pre><code class="hljs">    Aggregation: 表示端口的聚合能力。 TRUE(1)表示链路是可聚合的，FALSE(0)表示链路是独立链路，不可聚合
+</code></pre>
+</li>
+<li><pre><code class="hljs">    Synchronization: 表示端口当前聚合是否完成。TRUE(1)表示发送的链路处于IN_SYNC状态，即端口已被分配到正确的聚合组中， FALSE(0)表示链路为OUT_OF_SYNC状态，即端口还没有选择正确的聚合组
+</code></pre>
+</li>
+<li><pre><code class="hljs">    Collecting: TRUE(1)表示当前链路收包enable, 否则为FALSE(0)
+</code></pre>
+</li>
+<li><pre><code class="hljs">    Distributing: TRUE(1)表示当前链路发包enable, 否则为FALSE(0)
+</code></pre>
+</li>
+<li><pre><code class="hljs">    Defaulted： TRUE(1)表示Actor使用的Partner信息来自管理员配置的默认值。FALSE(0)表示Actor使用的Partner信息来自接收的LACPDU
+</code></pre>
+</li>
+<li><pre><code class="hljs">    Expired: TRUE(1)表示Actor RX状态机处于超时状态，否则不在超时状态。
+</code></pre>
+</li>
 </ol>
-<h3 id="注册Event的方法-virevent-c"><a href="#注册Event的方法-virevent-c" class="headerlink" title="注册Event的方法 virevent.c"></a>注册Event的方法 virevent.c</h3><p>|– virEventGLibRegisterOnce<br>|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRemove、TimeoutAdd、TimeoutUpdate、TimeoutRemove</p>
-<ul>
-<li>fd相关的handler<ul>
-<li>virEventAddHandle</li>
-<li>virEventUpdateHandle</li>
-<li>virEventRemoveHandle</li>
-</ul>
-</li>
-<li>virConnectDomainEventRegisterAny() 类似的接口需要注册以下3个Timeout函数<ul>
-<li>virEventAddTimeout</li>
-<li>virEventUpdateTimeout</li>
-<li>virEventRemoveTimeout</li>
-</ul>
-</li>
-</ul>
-<p><strong>vireventglib.c</strong> 定义glic实现的event操作函数</p>
-<h3 id="调用方法函数"><a href="#调用方法函数" class="headerlink" title="调用方法函数"></a>调用方法函数</h3><ol>
-<li>virConnectDomainEventRegisterAny: 增加回调函数用于处理事件<ul>
-<li>需要使用 VIR_DOMAIN_EVENT_CALLBACK() 宏强制转换提供的函数指针，以匹配此方法的签名</li>
-<li>virDomainPtr 只在回调函数执行期间有效，要保留对象，就需要 virDomainRef() 获取对域对象的引用</li>
-</ul>
-</li>
-<li>virConnectDomainEventDeregisterAny: 移除事件回调</li>
-<li>virConnectDomainEventRegister: 添加回调接受虚机生命周期通知</li>
-<li>virConnectDomainEventDeregister: 删除回调函数</li>
-<li>virDomainEventID: 事件id</li>
-<li>virDomainEventType: 事件类型</li>
+<p><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_port_valiables_def.png" srcset="/img/loading.gif" lazyload alt="port_variables_definition"></p>
+<ol>
+<li>AD_MUX_DETACHED -&gt; AD_MUX_WAITING: AD_PORT_SELECTED &#x3D;&#x3D; True || AD_PORT_STANDBY &#x3D;&#x3D; True</li>
+<li>AD_MUX_WAITING -&gt; AD_MUX_DETACHED: SELECTED &#x3D;&#x3D; FALSE</li>
+<li>AD_MUX_WAITING -&gt; AD_MUX_ATTACHED<ol>
+<li>port-&gt;sm_vars |&#x3D; AD_PORT_READY_N</li>
+<li>该 aggregator 的所有 Port都READY_N了  &#x3D;&#x3D;&#x3D;&#x3D;&gt; AD_PORT_READY</li>
 </ol>
-<h2 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h2><h3 id="注册事件处理函数"><a href="#注册事件处理函数" class="headerlink" title="注册事件处理函数"></a>注册事件处理函数</h3><p>domainEventCallbacks[]</p>
-<p>qemuProcessEventHandler ：添加线程池工作函数</p>
-<h3 id="分发-event，定时处理"><a href="#分发-event，定时处理" class="headerlink" title="分发 event，定时处理"></a>分发 event，定时处理</h3><p>|– virEventAddTimeout(virObjectEventTimer, …)<br>    |– virObjectEventStateFlush<br>        |– virObjectEventStateQueueDispatch(state, tempQueue, state-&gt;callbacks)<br>            |– virObjectEventStateDispatchCallbacks                           &lt;—- 找合适的callback，处理event<br>                |– virObjectEventDispatchMatchCallback<br>                |– event-&gt;dispatch(cb-&gt;conn, event, cb-&gt;cb, cb-&gt;opaque);      &lt;—- callback处理事件<br>        |– virObjectEventCallbackListPurgeMarked(state-&gt;callbacks);<br>        |– virObjectEventStateCleanupTimer</p>
-<h2 id="创建-DeviceAdded-Event-Class"><a href="#创建-DeviceAdded-Event-Class" class="headerlink" title="创建 DeviceAdded Event Class"></a>创建 DeviceAdded Event Class</h2><p>VIR_CLASS_NEW(virDomainEventDeviceAdded, virDomainEventClass)<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virDomainEventDeviceAddedClass.png" srcset="/img/loading.gif" lazyload alt="virDomainEventDeviceAddedClass"></p>
-<p>event-&gt;dispatch 一般都是 virDomainEventDispatchDefaultFunc 根据 event_id 分发，执行对应的函数<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virObjectEvent_dispatch.png" srcset="/img/loading.gif" lazyload alt="event-&gt;dispatch"></p>
-<p>VIR_DOMAIN_EVENT_ID_DEVICE_ADDED  &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  virConnectDomainEventDeviceAddedCallback</p>
+</li>
+<li>AD_MUX_ATTACHED -&gt; AD_MUX_DETACHED</li>
+<li>AD_MUX_DISTRIBUTING -&gt;</li>
+</ol>
+<p>如果前后状态不一致：<code>port-&gt;ntt = true;</code>  表明需要发送报文</p>
+<p>修改actor_oper_port_state，告知交换机当前端口的状态</p>
+<p>LACP_STATE_SYNCHRONIZATION    说明agg是active的</p>
+<h2 id="AD-MUX-DETACHED"><a href="#AD-MUX-DETACHED" class="headerlink" title="AD_MUX_DETACHED"></a>AD_MUX_DETACHED</h2><h2 id="AD-MUX-WAITING"><a href="#AD-MUX-WAITING" class="headerlink" title="AD_MUX_WAITING"></a>AD_MUX_WAITING</h2><h2 id="AD-MUX-ATTACHED"><a href="#AD-MUX-ATTACHED" class="headerlink" title="AD_MUX_ATTACHED"></a>AD_MUX_ATTACHED</h2><h2 id="AD-MUX-COLLECTING-DISTRIBUTING"><a href="#AD-MUX-COLLECTING-DISTRIBUTING" class="headerlink" title="AD_MUX_COLLECTING_DISTRIBUTING"></a>AD_MUX_COLLECTING_DISTRIBUTING</h2><h2 id="AD-MUX-COLLECTING"><a href="#AD-MUX-COLLECTING" class="headerlink" title="AD_MUX_COLLECTING"></a>AD_MUX_COLLECTING</h2><h2 id="AD-MUX-DISTRIBUTING"><a href="#AD-MUX-DISTRIBUTING" class="headerlink" title="AD_MUX_DISTRIBUTING"></a>AD_MUX_DISTRIBUTING</h2><p>一般的流程<br>AD_MUX_DETACHED  -&gt;  AD_MUX_WAITING   -&gt; AD_MUX_ATTACHED  -&gt; AD_MUX_COLLECTING_DISTRIBUTING</p>
 
                 
               </div>
@@ -333,7 +338,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/libvirt/" class="category-chain-item">libvirt</a>
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
   
   
 
@@ -348,9 +353,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/libvirt/" class="print-no-link">#libvirt</a>
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
       
-        <a href="/tags/event/" class="print-no-link">#event</a>
+        <a href="/tags/bond/" class="print-no-link">#bond</a>
       
     </div>
   
@@ -362,8 +367,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>libvirt event</div>
-      <div>https://gjorn4389.github.io/2024/02/27/libvirt/libvirt_event/</div>
+      <div>bond</div>
+      <div>https://gjorn4389.github.io/2024/08/16/kernel/bond/</div>
     </div>
     <div class="license-meta">
       
@@ -375,7 +380,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年2月27日</div>
+          <div>2024年8月16日</div>
         </div>
       
       
@@ -407,9 +412,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/03/13/libvirt/vcpu_hotplug/" title="VCPU Hotplug">
+                      <a href="/2024/11/24/kernel/mwait/" title="mwait">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">VCPU Hotplug</span>
+                        <span class="hidden-mobile">mwait</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -417,8 +422,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/02/27/libvirt/memory_hotplug/" title="Memory Hotplug">
-                        <span class="hidden-mobile">Memory Hotplug</span>
+                      <a href="/2024/07/17/virtual/kvm_init/" title="kvm_init">
+                        <span class="hidden-mobile">kvm_init</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

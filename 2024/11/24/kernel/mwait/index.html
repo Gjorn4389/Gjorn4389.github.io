@@ -16,26 +16,23 @@
   <meta name="author" content="Gjorn">
   <meta name="keywords" content="">
   
-    <meta name="description" content="热插vcpu主要流程hotpluggable配置缺省值qemuDomainAttachDeviceqemuDomainAttachDeviceFlagsqemuDomainAttachDeviceLiveAndConfigqemuDomainAttachDeviceConfigvirDomainDefPostParsevirDomainDefPostParseCommonvirDomainVcpu">
+    <meta name="description" content="mwait 指令 A hint that allows the processor to stop instruction execution and enter an implementation-dependent optimized state until occurrence of a class of events.MWAIT instruction provides hints to">
 <meta property="og:type" content="article">
-<meta property="og:title" content="VCPU Hotplug">
-<meta property="og:url" content="https://gjorn4389.github.io/2024/03/13/libvirt/vcpu_hotplug/index.html">
+<meta property="og:title" content="mwait">
+<meta property="og:url" content="https://gjorn4389.github.io/2024/11/24/kernel/mwait/index.html">
 <meta property="og:site_name" content="HandBook">
-<meta property="og:description" content="热插vcpu主要流程hotpluggable配置缺省值qemuDomainAttachDeviceqemuDomainAttachDeviceFlagsqemuDomainAttachDeviceLiveAndConfigqemuDomainAttachDeviceConfigvirDomainDefPostParsevirDomainDefPostParseCommonvirDomainVcpu">
+<meta property="og:description" content="mwait 指令 A hint that allows the processor to stop instruction execution and enter an implementation-dependent optimized state until occurrence of a class of events.MWAIT instruction provides hints to">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/plug_vcpu_hotpluggable_not_set.png">
-<meta property="article:published_time" content="2024-03-13T05:33:26.000Z">
+<meta property="article:published_time" content="2024-11-24T05:33:26.000Z">
 <meta property="article:modified_time" content="2025-07-19T03:27:20.718Z">
 <meta property="article:author" content="Gjorn">
-<meta property="article:tag" content="libvirt">
-<meta property="article:tag" content="hotplug">
-<meta property="article:tag" content="vcpu">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="kvm">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/plug_vcpu_hotpluggable_not_set.png">
   
   
   
-  <title>VCPU Hotplug - HandBook</title>
+  <title>mwait - HandBook</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -201,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="VCPU Hotplug"></span>
+            <span id="subtitle" data-typed-text="mwait"></span>
           
         </div>
 
@@ -212,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-13 13:33" pubdate>
-          2024年3月13日 下午
+        <time datetime="2024-11-24 13:33" pubdate>
+          2024年11月24日 下午
         </time>
       </span>
     
@@ -224,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          54 字
+          134 字
         
       </span>
     
@@ -235,7 +232,7 @@
         
         
         
-          1 分钟
+          2 分钟
         
       </span>
     
@@ -272,17 +269,29 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">VCPU Hotplug</h1>
+            <h1 id="seo-header">mwait</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="热插vcpu主要流程"><a href="#热插vcpu主要流程" class="headerlink" title="热插vcpu主要流程"></a>热插vcpu主要流程</h1><h2 id="hotpluggable配置缺省值"><a href="#hotpluggable配置缺省值" class="headerlink" title="hotpluggable配置缺省值"></a>hotpluggable配置缺省值</h2><p>qemuDomainAttachDevice<br>qemuDomainAttachDeviceFlags<br>qemuDomainAttachDeviceLiveAndConfig<br>qemuDomainAttachDeviceConfig<br>virDomainDefPostParse<br>virDomainDefPostParseCommon<br>virDomainVcpuDefPostParse</p>
-<p>以下代码可以确定，当没有配置vcpu的hotpluggable时：</p>
-<ol>
-<li>如果使能了vcpu，那么就是不可热插拔</li>
-<li>如果没有使能vcpu，那么就是可热插拔<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/plug_vcpu_hotpluggable_not_set.png" srcset="/img/loading.gif" lazyload alt="hotpluggable_not_set"></li>
-</ol>
+                <h1 id="mwait-指令"><a href="#mwait-指令" class="headerlink" title="mwait 指令"></a>mwait 指令</h1><blockquote>
+<p>A hint that allows the processor to stop instruction execution and enter an implementation-dependent optimized state until occurrence of a class of events.<br>MWAIT instruction provides hints to allow the processor to enter an implementation-dependent optimized state. There are two principal targeted usages: address-range monitor and advanced power management. Both usages of MWAIT require the use of the MONITOR instruction.</p>
+</blockquote>
+<p>‌MWAIT是一种CPU处理器指令，主要用于让CPU进入低功耗状态以节省能源，并等待一些事件的发生‌。当CPU使用MWAIT指令时，它可以在不消耗太多能源的情况下监控外部设备的事件，如外部设备的中断或唤醒信号。这种方式不仅节省了电力，还能提高系统的响应速度，因为CPU不必频繁地从低功耗状态中唤醒‌。</p>
+<h1 id="内核如何使用？"><a href="#内核如何使用？" class="headerlink" title="内核如何使用？"></a>内核如何使用？</h1><p>X86_FEATURE_MWAIT (arch&#x2F;x86&#x2F;include&#x2F;asm&#x2F;cpufeatures.h)</p>
+<p>mwait实现 -&gt; arch&#x2F;x86&#x2F;include&#x2F;asm&#x2F;mwait.h</p>
+<p>mwait_idle_with_hints</p>
+<p>intel-idle</p>
+<p>arch&#x2F;x86&#x2F;kernel&#x2F;process.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * MONITOR/MWAIT with no hints, used for default C1 state. This invokes MWAIT</span><br><span class="hljs-comment"> * with interrupts enabled and no flags, which is backwards compatible with the</span><br><span class="hljs-comment"> * original MWAIT implementation.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> __cpuidle <span class="hljs-type">void</span> <span class="hljs-title function_">mwait_idle</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (!current_set_polling_and_test()) &#123;<br>		<span class="hljs-keyword">if</span> (this_cpu_has(X86_BUG_CLFLUSH_MONITOR)) &#123;<br>			mb(); <span class="hljs-comment">/* quirk */</span><br>			clflush((<span class="hljs-type">void</span> *)&amp;current_thread_info()-&gt;flags);<br>			mb(); <span class="hljs-comment">/* quirk */</span><br>		&#125;<br><br>		__monitor((<span class="hljs-type">void</span> *)&amp;current_thread_info()-&gt;flags, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>		<span class="hljs-keyword">if</span> (!need_resched()) &#123;<br>			__sti_mwait(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>			raw_local_irq_disable();<br>		&#125;<br>	&#125;<br>	__current_clr_polling();<br>&#125;<br><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">thread_info</span> &#123;</span><br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>		flags;		<span class="hljs-comment">/* low level flags */</span><br>	<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>		syscall_work;	<span class="hljs-comment">/* SYSCALL_WORK_ flags */</span><br>	u32			status;		<span class="hljs-comment">/* thread synchronous flags */</span><br><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_SMP</span><br>	u32			cpu;		<span class="hljs-comment">/* current CPU */</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+
+<h1 id="KVM-支持虚机mwait"><a href="#KVM-支持虚机mwait" class="headerlink" title="KVM 支持虚机mwait"></a>KVM 支持虚机mwait</h1><p>kvm_emulate_mwait</p>
+<p>kvm_emulate_monitor_mwait</p>
+<p>kvm_vm_ioctl_enable_cap</p>
+<p>vmx_exec_control</p>
+<p>EXIT_REASON_MWAIT_INSTRUCTION</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.felixcloutier.com/x86/mwait">mwait指令</a></p>
 
                 
               </div>
@@ -301,7 +310,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/libvirt/" class="category-chain-item">libvirt</a>
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
   
   
 
@@ -316,11 +325,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/libvirt/" class="print-no-link">#libvirt</a>
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
       
-        <a href="/tags/hotplug/" class="print-no-link">#hotplug</a>
-      
-        <a href="/tags/vcpu/" class="print-no-link">#vcpu</a>
+        <a href="/tags/kvm/" class="print-no-link">#kvm</a>
       
     </div>
   
@@ -332,8 +339,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>VCPU Hotplug</div>
-      <div>https://gjorn4389.github.io/2024/03/13/libvirt/vcpu_hotplug/</div>
+      <div>mwait</div>
+      <div>https://gjorn4389.github.io/2024/11/24/kernel/mwait/</div>
     </div>
     <div class="license-meta">
       
@@ -345,7 +352,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年3月13日</div>
+          <div>2024年11月24日</div>
         </div>
       
       
@@ -377,9 +384,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/07/17/qemu/kvm_init/" title="kvm_init">
+                      <a href="/2025/07/12/kernel/quirk_macro/" title="quirk macro">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">kvm_init</span>
+                        <span class="hidden-mobile">quirk macro</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -387,8 +394,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/02/27/libvirt/libvirt_event/" title="libvirt event">
-                        <span class="hidden-mobile">libvirt event</span>
+                      <a href="/2024/08/16/kernel/bond/" title="bond">
+                        <span class="hidden-mobile">bond</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
