@@ -44,15 +44,15 @@ Terminal=false
 > The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_PicGo-r9KnKV/chrome-sandbox is owned by root and has mode 4755.
 
 1. 运行时添加免沙箱命令 `--no-sandbox`
-2. 启用非特权用户命名空间克隆
-    ```shell
-    # 临时设置
-    sudo sysctl kernel.unprivileged_userns_clone=1
+2. ~~启用非特权用户命名空间克隆(试了没用)~~
+```shell
+# 临时设置
+sudo sysctl kernel.unprivileged_userns_clone=1
 
-    # 永久设置
-    echo 'kernel.unprivileged_userns_clone=1' | sudo tee -a /etc/sysctl.conf
-    sudo sysctl -p
-    ```
+# 永久设置
+echo 'kernel.unprivileged_userns_clone=1' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
 
 # AppImage 缺少依赖
 `sudo apt install libfuse2 xclip`

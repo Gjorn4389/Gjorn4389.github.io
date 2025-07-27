@@ -13,3 +13,13 @@ tags:
 2. 增加个人上游仓库: `git remote add <remote_name> <git_url>`
 3. 重命名: `git remote rename <old_name> <new_name>`
 ![git_remote](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/git_remote.png)
+
+# github不能使用密码fetch/pull
+> remote: Invalid username or token. Password authentication is not supported for Git operations.
+fatal: Authentication failed for
+
+1. 生成一个 Token
+    > Settings / Developer Settings / Personal access tokens / Tokens(classic)
+2. 使用用户名和凭据存储
+    + `git config --global credential.helper store`
+    + `git push -u origin HEAD`: 输入 Gjorn、Token
