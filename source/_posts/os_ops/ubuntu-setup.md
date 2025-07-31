@@ -183,3 +183,20 @@ sudo gpasswd -a $USER docker    #将登陆用户加入到docker用户组中
 newgrp docker                   #更新用户组
 ```
 4. 安装vscode的扩展
+
+# 自定义`term`打开终端
+```shell
+function term() {
+    if [ `whoami` == "root" ]; then
+        echo "Can't upport in root"
+    fi
+
+    if [ $# -eq 0 ]; then
+        gnome-terminal --working-directory="$PWD"
+    elif [ -d "$1" ]; then
+        gnome-terminal --working-directory="$(realpath "$1")"
+    else
+        echo "Path not exist: $1"
+    fi
+}
+```
