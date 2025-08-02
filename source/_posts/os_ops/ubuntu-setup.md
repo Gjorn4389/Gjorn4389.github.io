@@ -200,3 +200,14 @@ function term() {
     fi
 }
 ```
+
+# ssh配置文件
+> `/etc/ssh/ssh_config` 会 `Include /etc/ssh/ssh_config.d/*.conf`
+
+```conf
+# /etc/ssh/ssh_config.d/node.conf
+Host server1
+    HostName 192.168.1.100
+    User username
+    Port 22
+```

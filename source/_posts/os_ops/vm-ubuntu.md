@@ -6,6 +6,8 @@ tags:
     - ubuntu
 ---
 
+# XML配置
+
 1. ubuntu需要修改emulator
 ```xml
 <emulator>/usr/bin/qemu-system-x86_64</emulator>

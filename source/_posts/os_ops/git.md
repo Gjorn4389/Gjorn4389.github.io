@@ -23,3 +23,9 @@ fatal: Authentication failed for
 2. 使用用户名和凭据存储
     + `git config --global credential.helper store`
     + `git push -u origin HEAD`: 输入 Gjorn、Token
+
+# 全局.gitignore
+`git config --global core.excludesfile ~/.gitignore_global`
+
+# git lfs
+> 管理大文件
