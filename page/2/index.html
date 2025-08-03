@@ -224,6 +224,195 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/02/27/virtual/libvirt_event/" target="_self">
+          libvirt event
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/27/virtual/libvirt_event/" target="_self">
+        <div>
+          Event 事件机制事件注册virEventRegisterDefaultImpl 基于 poll 的事件注册 必须使用 virEventRunDefaultImpl 来处理事件  注册Event的方法 virevent.c|– virEventGLibRegisterOnce|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRem
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-27 13:33" pubdate>
+              2024-02-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/libvirt/" class="category-chain-item">libvirt</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/libvirt/">#libvirt</a>
+            
+              <a href="/tags/event/">#event</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/02/27/virtual/memory_hotplug/" target="_self">
+          Memory Hotplug
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/27/virtual/memory_hotplug/" target="_self">
+        <div>
+          热插内存主要流程注册 callbackvirConnectDomainEventRegisterAny|– qemuConnectDomainEventRegisterAny    |– virDomainEventStateRegisterID(conn, driver-&gt;domainEventState, …)        |– virObjectEventStateRegisterI
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-27 13:33" pubdate>
+              2024-02-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/libvirt/" class="category-chain-item">libvirt</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/libvirt/">#libvirt</a>
+            
+              <a href="/tags/hotplug/">#hotplug</a>
+            
+              <a href="/tags/memory/">#memory</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/23/xv6/" target="_self">
+          xv6
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/23/xv6/" target="_self">
+        <div>
+          部署开发环境使用docker部署 在main分支中有docker-compose.yml，使用 docker-compose up -d 搭建环境  使用gdb 环境配置gdb   一个窗口: make qemu-gdb 一个窗口: gdb-multiarch -x .gdbinit   xv6启动第一个进程 entry.S 从 _entry 开始运行xv6，此时虚拟地址直接映射到物理地址 ker
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-23 09:26" pubdate>
+              2023-12-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/os/" class="category-chain-item">os</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/os/">#os</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2023/12/23/virtual/virtio/Virtio/" target="_self">
           Virtio
         </a>
@@ -419,7 +608,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/12/20/os_ops/vm-ubuntu/" target="_self">
         <div>
-          ubuntu需要修改emulator1&lt;emulator&gt;/usr/bin/qemu-system-x86_64&lt;/emulator&gt; 需要cdrom引导安装系统12345678910111213&lt;disk type=&#x27;file&#x27; device=&#x27;disk&#x27;&gt;    &lt;driver name=&#x27;qemu&
+          XML配置 ubuntu需要修改emulator1&lt;emulator&gt;/usr/bin/qemu-system-x86_64&lt;/emulator&gt; 需要cdrom引导安装系统12345678910111213&lt;disk type=&#x27;file&#x27; device=&#x27;disk&#x27;&gt;    &lt;driver name=&#x27;
         </div>
       </a>
 

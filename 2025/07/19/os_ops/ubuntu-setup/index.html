@@ -24,7 +24,7 @@
 <meta property="og:description" content="替换repo源清华源 删除snap123456789101112131415161718# snap listsnap remove --purge gnome-42-2204snap remove --purge gtk-common-themessnap remove --purge snap-storesnap remove --purge snapd-desktop-integration">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-19T03:59:23.000Z">
-<meta property="article:modified_time" content="2025-07-25T23:57:12.408Z">
+<meta property="article:modified_time" content="2025-08-03T14:31:27.717Z">
 <meta property="article:author" content="Gjorn">
 <meta property="article:tag" content="ubuntu">
 <meta name="twitter:card" content="summary_large_image">
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          219 字
+          238 字
         
       </span>
     
@@ -336,7 +336,14 @@
 <li>用户添加docker权限，把用户添加到到docker组<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo groupadd docker            #添加docker用户组<br>sudo gpasswd -a $USER docker    #将登陆用户加入到docker用户组中<br>newgrp docker                   #更新用户组<br></code></pre></td></tr></table></figure></li>
 <li>安装vscode的扩展</li>
 </ol>
+<h1 id="自定义term打开终端"><a href="#自定义term打开终端" class="headerlink" title="自定义term打开终端"></a>自定义<code>term</code>打开终端</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">function term() &#123;<br>    if [ `whoami` == &quot;root&quot; ]; then<br>        echo &quot;Can&#x27;t upport in root&quot;<br>    fi<br><br>    if [ $# -eq 0 ]; then<br>        gnome-terminal --working-directory=&quot;$PWD&quot;<br>    elif [ -d &quot;$1&quot; ]; then<br>        gnome-terminal --working-directory=&quot;$(realpath &quot;$1&quot;)&quot;<br>    else<br>        echo &quot;Path not exist: $1&quot;<br>    fi<br>&#125;<br></code></pre></td></tr></table></figure>
 
+<h1 id="ssh配置文件"><a href="#ssh配置文件" class="headerlink" title="ssh配置文件"></a>ssh配置文件</h1><blockquote>
+<p><code>/etc/ssh/ssh_config</code> 会 <code>Include /etc/ssh/ssh_config.d/*.conf</code></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs conf"># /etc/ssh/ssh_config.d/node.conf<br>Host server1<br>    HostName 192.168.1.100<br>    User username<br>    Port 22<br></code></pre></td></tr></table></figure>
+
+<h1 id="给当前用户root权限"><a href="#给当前用户root权限" class="headerlink" title="给当前用户root权限"></a>给当前用户root权限</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo usermod -aG sudo $USER<br>echo &quot;$USER ALL=(ALL:ALL) NOPASSWD: ALL&quot; | sudo tee /etc/sudoers.d/$USER<br>sudo chmod 440 /etc/sudoers.d/$USER<br></code></pre></td></tr></table></figure>
                 
               </div>
             
