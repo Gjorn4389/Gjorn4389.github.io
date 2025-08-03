@@ -211,3 +211,10 @@ Host server1
     User username
     Port 22
 ```
+
+# 给当前用户root权限
+```shell
+sudo usermod -aG sudo $USER
+echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
+sudo chmod 440 /etc/sudoers.d/$USER
+```

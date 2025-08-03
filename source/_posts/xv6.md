@@ -6,10 +6,21 @@ tags:
     - os
 ---
 
+# 部署开发环境
+
+## 使用docker部署
+> 在main分支中有`docker-compose.yml`，使用 `docker-compose up -d` 搭建环境
+
+## 使用gdb
 > [环境配置gdb](https://zhuanlan.zhihu.com/p/638731320)
 
-# xv6启动第一个进程
++ 一个窗口: `make qemu-gdb`
++ 一个窗口: `gdb-multiarch -x .gdbinit`
 
+![gdb tips](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_gdb_tips.png)
+
+
+# xv6启动第一个进程
 1. `entry.S`
     + 从 `_entry` 开始运行xv6，此时虚拟地址直接映射到物理地址
     + `kernel.ld` 将 xv6内核加载到 `0x80000000`，`0x0~0x80000000` 包含IO设备
