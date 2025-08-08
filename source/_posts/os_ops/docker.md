@@ -28,4 +28,16 @@ chmod +x /usr/local/bin/docker-compose
 
 ## 进入容器：
 1. `docker exec -it xv6-env /bin/bash`: 在容器中开启一个新的终端
+    ```shell
+    # install `fzf`, dsh + Tab to insert docker name
+    function dsh() {
+        local container=${1:-$(docker ps --format '{{.Names}}' | fzf)}
+        if [ -n "$container" ]; then
+            docker exec -it "$container" /bin/bash
+        else
+            echo "No container selected."
+        fi
+    }
+    ```
 2. `docker attach xv6-env`: 进入容器当前执行的终端
+
