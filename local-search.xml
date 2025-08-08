@@ -8,7 +8,7 @@
     <link href="/2025/08/03/os_ops/docker/"/>
     <url>/2025/08/03/os_ops/docker/</url>
     
-    <content type="html"><![CDATA[<h1 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h1><blockquote><p><del><code>apt install -y docker-cpmpose</code></del><br>Python 3.12中移除了 <code>disutils</code>模块，导致docker-compose异常：<code>apt install python3-distutils</code></p></blockquote><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64 &gt; /usr/local/bin/docker-compose<br>chmod +x /usr/local/bin/docker-compose<br></code></pre></td></tr></table></figure><h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><ol><li>启动服务: <code>docker-compose up -d</code></li><li>停止服务: <code>docker-compose stop</code></li><li>删除服务: <code>docker-compose down</code></li><li>重启服务: <code>docker-compose restart</code></li><li>查看日志: <code>docker-compose logs</code></li><li>进入容器: <code>docker-compose exec &lt;container_name&gt; /bin/bash</code></li><li>查看容器状态: <code>docker-compose ps</code></li><li>构建并启动: <code>docker-compose up --build -d</code></li></ol><h2 id="进入容器："><a href="#进入容器：" class="headerlink" title="进入容器："></a>进入容器：</h2><ol><li><code>docker exec -it xv6-env /bin/bash</code>: 在容器中开启一个新的终端</li><li><code>docker attach xv6-env</code>: 进入容器当前执行的终端</li></ol>]]></content>
+    <content type="html"><![CDATA[<h1 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h1><blockquote><p><del><code>apt install -y docker-cpmpose</code></del><br>Python 3.12中移除了 <code>disutils</code>模块，导致docker-compose异常：<code>apt install python3-distutils</code></p></blockquote><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64 &gt; /usr/local/bin/docker-compose<br>chmod +x /usr/local/bin/docker-compose<br></code></pre></td></tr></table></figure><h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><ol><li>启动服务: <code>docker-compose up -d</code></li><li>停止服务: <code>docker-compose stop</code></li><li>删除服务: <code>docker-compose down</code></li><li>重启服务: <code>docker-compose restart</code></li><li>查看日志: <code>docker-compose logs</code></li><li>进入容器: <code>docker-compose exec &lt;container_name&gt; /bin/bash</code></li><li>查看容器状态: <code>docker-compose ps</code></li><li>构建并启动: <code>docker-compose up --build -d</code></li></ol><h2 id="进入容器："><a href="#进入容器：" class="headerlink" title="进入容器："></a>进入容器：</h2><ol><li><code>docker exec -it xv6-env /bin/bash</code>: 在容器中开启一个新的终端 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">install `fzf`, dsh + Tab to insert docker name</span><br>function dsh() &#123;<br>    local container=$&#123;1:-$(docker ps --format &#x27;&#123;&#123;.Names&#125;&#125;&#x27; | fzf)&#125;<br>    if [ -n &quot;$container&quot; ]; then<br>        docker exec -it &quot;$container&quot; /bin/bash<br>    else<br>        echo &quot;No container selected.&quot;<br>    fi<br>&#125;<br></code></pre></td></tr></table></figure></li><li><code>docker attach xv6-env</code>: 进入容器当前执行的终端</li></ol>]]></content>
     
     
     <categories>
@@ -75,6 +75,33 @@
       <tag>ai</tag>
       
       <tag>llm</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>deploy Ollama</title>
+    <link href="/2025/08/02/ai_agent/ollama/"/>
+    <url>/2025/08/02/ai_agent/ollama/</url>
+    
+    <content type="html"><![CDATA[<h1 id="docker-部署Ollama"><a href="#docker-部署Ollama" class="headerlink" title="docker 部署Ollama"></a>docker 部署Ollama</h1><blockquote><p><a href="https://zhuanlan.zhihu.com/p/7463632184">ollama + ollama webui</a></p></blockquote><ol><li>创建容器目录: <code>mkdir /srv/docker/ollama</code></li><li>创建容器: <code>docker run -d --gpus=all --name ollama -v /srv/docker/ollama:/root/.ollama -p 11434:11434 ollama/ollama</code></li><li>进入容器: <code>docker exec -it ollama /bin/bash</code></li><li>验证: <code>ollama</code></li></ol><h2 id="使用-open-webui-访问ollama容器"><a href="#使用-open-webui-访问ollama容器" class="headerlink" title="使用 open-webui 访问ollama容器"></a>使用 open-webui 访问ollama容器</h2><p>创建<code>open-webui</code>容器: <code>docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v /srv/docker/open_webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main</code></p><h2 id="单容器部署-open-webui-ollama"><a href="#单容器部署-open-webui-ollama" class="headerlink" title="单容器部署 open-webui + ollama"></a>单容器部署 open-webui + ollama</h2><p>创建聚合容器: <code>docker run -d -p 3000:8080 --gpus=all -v /srv/docker/ollama:/root/.ollama -v /srv/docker/open_webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama</code></p><h1 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h1><h2 id="修改config"><a href="#修改config" class="headerlink" title="修改config"></a>修改config</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; EOF &gt; ~/.ollama/config.json<br>&#123;<br>    &quot;registry&quot;: &#123;<br>        &quot;mirrors&quot;: &#123;<br>            &quot;registry.ollama.ai&quot;: &quot;https://registry.ollama.ai&quot;<br>        &#125;<br>    &#125;<br>&#125;<br>EOF<br></code></pre></td></tr></table></figure><h2 id="下载魔搭社区镜像"><a href="#下载魔搭社区镜像" class="headerlink" title="下载魔搭社区镜像"></a>下载魔搭社区镜像</h2><p><code>ollama pull modelscope.cn/unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF</code></p><h2 id="命令行制定镜像源"><a href="#命令行制定镜像源" class="headerlink" title="命令行制定镜像源"></a>命令行制定镜像源</h2><p><code>ollama run deepseek-r1:7b --registry-mirror https://registry.ollama.ai</code></p><h1 id="指定量化"><a href="#指定量化" class="headerlink" title="指定量化"></a>指定量化</h1><p><code>ollama run modelscope2ollama-registry.azurewebsites.net/qwen/Qwen2.5-7B-Instruct-gguf:Q8_0</code></p><h1 id="指定模板"><a href="#指定模板" class="headerlink" title="指定模板"></a>指定模板</h1><p><code>ollama run modelscope2ollama-registry.azurewebsites.net/qwen/Qwen2.5-7B-Instruct-gguf:Q8_0--qwen2</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>ai</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>ai</tag>
+      
+      <tag>Ollama</tag>
       
     </tags>
     
@@ -214,6 +241,31 @@
   
   
   <entry>
+    <title>N150 nas</title>
+    <link href="/2024/08/16/nas/nas/"/>
+    <url>/2024/08/16/nas/nas/</url>
+    
+    <content type="html"><![CDATA[<h1 id="安装PVE"><a href="#安装PVE" class="headerlink" title="安装PVE"></a>安装PVE</h1><blockquote><p><a href="https://pve.proxmox.com/wiki/Prepare_Installation_Media">Prepare Installation Media</a></p></blockquote><p>使用<code>dd</code>安装PVE镜像，才能install成功<br><code>dd bs=1M conv=fdatasync if=./proxmox-ve_*.iso of=/dev/XYZ</code></p><h2 id="核显SRIOV"><a href="#核显SRIOV" class="headerlink" title="核显SRIOV"></a>核显SRIOV</h2><blockquote><p><a href="https://github.com/strongtz/i915-sriov-dkms">详见README</a></p></blockquote><ol><li>Install build tools: <code>apt install build-* dkms</code></li><li>Install the kernel and headers for desired version: <code>apt install proxmox-headers-6.8 proxmox-kernel-6.8</code> (for unsigned kernel).</li><li>Download deb package from the <a href="https://github.com/strongtz/i915-sriov-dkms/releases">releases page</a><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget -O /tmp/i915-sriov-dkms_2025.07.22_amd64.deb <span class="hljs-string">&quot;https://github.com/strongtz/i915-sriov-dkms/releases/download/2025.07.22/i915-sriov-dkms_2025.07.22_amd64.deb&quot;</span><br></code></pre></td></tr></table></figure></li><li>Install the deb package with dpkg: <code>dpkg -i /tmp/i915-sriov-dkms_2025.07.22_amd64.deb</code></li><li>Once finished, the kernel commandline needs to be adjusted: <code>nano /etc/default/grub</code> and change <code>GRUB_CMDLINE_LINUX_DEFAULT</code> to <code>intel_iommu=on i915.enable_guc=3 i915.max_vfs=7 module_blacklist=xe</code>, or add to it if you have other arguments there already.</li><li>Update <code>grub</code> and <code>initramfs</code> by executing <code>update-grub</code> and <code>update-initramfs -u</code></li><li>Optionally pin the kernel version and update the boot config via <code>proxmox-boot-tool</code>.</li><li>In order to enable the VFs, a <code>sysfs</code> attribute must be set. Install <code>sysfsutils</code>, then do <code>echo &quot;devices/pci0000:00/0000:00:02.0/sriov_numvfs = 7&quot; &gt; /etc/sysfs.conf</code>, assuming your iGPU is on 00:02 bus. If not, use <code>lspci | grep VGA</code> to find the PCIe bus your iGPU is on.</li><li>Reboot the system.</li><li>When the system is back up again, you should see the number of VFs under 02:00.1 - 02:00.7. Again, assuming your iGPU is on 00:02 bus.</li><li>You can passthrough the VFs to LXCs or VMs. However, never pass the <strong>PF (02:00.0)</strong> to <strong>VM</strong> which would crash all other VFs.</li></ol><h1 id="immortalwrt"><a href="#immortalwrt" class="headerlink" title="immortalwrt"></a>immortalwrt</h1><p>配置称旁路由后，将电脑的网关设置成 LAN 的IP地址，发现能ping通不能连上网。</p><p>可能是因为回来的TCP包 ip被改了。可以如下修改。</p><p><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/immortalwrt_lan_firewall.png" alt="immortalwrt配置"></p><h2 id="openclash"><a href="#openclash" class="headerlink" title="openclash"></a>openclash</h2><p>按照机场教程搞一下就行</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>nas</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>N150</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>kvm_init</title>
     <link href="/2024/07/17/virtual/kvm_init/"/>
     <url>/2024/07/17/virtual/kvm_init/</url>
@@ -270,33 +322,6 @@
   
   
   <entry>
-    <title>libvirt event</title>
-    <link href="/2024/02/27/virtual/libvirt_event/"/>
-    <url>/2024/02/27/virtual/libvirt_event/</url>
-    
-    <content type="html"><![CDATA[<h1 id="Event-事件机制"><a href="#Event-事件机制" class="headerlink" title="Event 事件机制"></a>Event 事件机制</h1><h2 id="事件注册"><a href="#事件注册" class="headerlink" title="事件注册"></a>事件注册</h2><h3 id="virEventRegisterDefaultImpl"><a href="#virEventRegisterDefaultImpl" class="headerlink" title="virEventRegisterDefaultImpl"></a>virEventRegisterDefaultImpl</h3><ol><li>基于 poll 的事件注册</li><li>必须使用 virEventRunDefaultImpl 来处理事件</li></ol><h3 id="注册Event的方法-virevent-c"><a href="#注册Event的方法-virevent-c" class="headerlink" title="注册Event的方法 virevent.c"></a>注册Event的方法 virevent.c</h3><p>|– virEventGLibRegisterOnce<br>|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRemove、TimeoutAdd、TimeoutUpdate、TimeoutRemove</p><ul><li>fd相关的handler<ul><li>virEventAddHandle</li><li>virEventUpdateHandle</li><li>virEventRemoveHandle</li></ul></li><li>virConnectDomainEventRegisterAny() 类似的接口需要注册以下3个Timeout函数<ul><li>virEventAddTimeout</li><li>virEventUpdateTimeout</li><li>virEventRemoveTimeout</li></ul></li></ul><p><strong>vireventglib.c</strong> 定义glic实现的event操作函数</p><h3 id="调用方法函数"><a href="#调用方法函数" class="headerlink" title="调用方法函数"></a>调用方法函数</h3><ol><li>virConnectDomainEventRegisterAny: 增加回调函数用于处理事件<ul><li>需要使用 VIR_DOMAIN_EVENT_CALLBACK() 宏强制转换提供的函数指针，以匹配此方法的签名</li><li>virDomainPtr 只在回调函数执行期间有效，要保留对象，就需要 virDomainRef() 获取对域对象的引用</li></ul></li><li>virConnectDomainEventDeregisterAny: 移除事件回调</li><li>virConnectDomainEventRegister: 添加回调接受虚机生命周期通知</li><li>virConnectDomainEventDeregister: 删除回调函数</li><li>virDomainEventID: 事件id</li><li>virDomainEventType: 事件类型</li></ol><h2 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h2><h3 id="注册事件处理函数"><a href="#注册事件处理函数" class="headerlink" title="注册事件处理函数"></a>注册事件处理函数</h3><p>domainEventCallbacks[]</p><p>qemuProcessEventHandler ：添加线程池工作函数</p><h3 id="分发-event，定时处理"><a href="#分发-event，定时处理" class="headerlink" title="分发 event，定时处理"></a>分发 event，定时处理</h3><p>|– virEventAddTimeout(virObjectEventTimer, …)<br>    |– virObjectEventStateFlush<br>        |– virObjectEventStateQueueDispatch(state, tempQueue, state-&gt;callbacks)<br>            |– virObjectEventStateDispatchCallbacks                           &lt;—- 找合适的callback，处理event<br>                |– virObjectEventDispatchMatchCallback<br>                |– event-&gt;dispatch(cb-&gt;conn, event, cb-&gt;cb, cb-&gt;opaque);      &lt;—- callback处理事件<br>        |– virObjectEventCallbackListPurgeMarked(state-&gt;callbacks);<br>        |– virObjectEventStateCleanupTimer</p><h2 id="创建-DeviceAdded-Event-Class"><a href="#创建-DeviceAdded-Event-Class" class="headerlink" title="创建 DeviceAdded Event Class"></a>创建 DeviceAdded Event Class</h2><p>VIR_CLASS_NEW(virDomainEventDeviceAdded, virDomainEventClass)<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virDomainEventDeviceAddedClass.png" alt="virDomainEventDeviceAddedClass"></p><p>event-&gt;dispatch 一般都是 virDomainEventDispatchDefaultFunc 根据 event_id 分发，执行对应的函数<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virObjectEvent_dispatch.png" alt="event-&gt;dispatch"></p><p>VIR_DOMAIN_EVENT_ID_DEVICE_ADDED  &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  virConnectDomainEventDeviceAddedCallback</p>]]></content>
-    
-    
-    <categories>
-      
-      <category>libvirt</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>libvirt</tag>
-      
-      <tag>event</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Memory Hotplug</title>
     <link href="/2024/02/27/virtual/memory_hotplug/"/>
     <url>/2024/02/27/virtual/memory_hotplug/</url>
@@ -318,6 +343,33 @@
       <tag>hotplug</tag>
       
       <tag>memory</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>libvirt event</title>
+    <link href="/2024/02/27/virtual/libvirt_event/"/>
+    <url>/2024/02/27/virtual/libvirt_event/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Event-事件机制"><a href="#Event-事件机制" class="headerlink" title="Event 事件机制"></a>Event 事件机制</h1><h2 id="事件注册"><a href="#事件注册" class="headerlink" title="事件注册"></a>事件注册</h2><h3 id="virEventRegisterDefaultImpl"><a href="#virEventRegisterDefaultImpl" class="headerlink" title="virEventRegisterDefaultImpl"></a>virEventRegisterDefaultImpl</h3><ol><li>基于 poll 的事件注册</li><li>必须使用 virEventRunDefaultImpl 来处理事件</li></ol><h3 id="注册Event的方法-virevent-c"><a href="#注册Event的方法-virevent-c" class="headerlink" title="注册Event的方法 virevent.c"></a>注册Event的方法 virevent.c</h3><p>|– virEventGLibRegisterOnce<br>|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRemove、TimeoutAdd、TimeoutUpdate、TimeoutRemove</p><ul><li>fd相关的handler<ul><li>virEventAddHandle</li><li>virEventUpdateHandle</li><li>virEventRemoveHandle</li></ul></li><li>virConnectDomainEventRegisterAny() 类似的接口需要注册以下3个Timeout函数<ul><li>virEventAddTimeout</li><li>virEventUpdateTimeout</li><li>virEventRemoveTimeout</li></ul></li></ul><p><strong>vireventglib.c</strong> 定义glic实现的event操作函数</p><h3 id="调用方法函数"><a href="#调用方法函数" class="headerlink" title="调用方法函数"></a>调用方法函数</h3><ol><li>virConnectDomainEventRegisterAny: 增加回调函数用于处理事件<ul><li>需要使用 VIR_DOMAIN_EVENT_CALLBACK() 宏强制转换提供的函数指针，以匹配此方法的签名</li><li>virDomainPtr 只在回调函数执行期间有效，要保留对象，就需要 virDomainRef() 获取对域对象的引用</li></ul></li><li>virConnectDomainEventDeregisterAny: 移除事件回调</li><li>virConnectDomainEventRegister: 添加回调接受虚机生命周期通知</li><li>virConnectDomainEventDeregister: 删除回调函数</li><li>virDomainEventID: 事件id</li><li>virDomainEventType: 事件类型</li></ol><h2 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h2><h3 id="注册事件处理函数"><a href="#注册事件处理函数" class="headerlink" title="注册事件处理函数"></a>注册事件处理函数</h3><p>domainEventCallbacks[]</p><p>qemuProcessEventHandler ：添加线程池工作函数</p><h3 id="分发-event，定时处理"><a href="#分发-event，定时处理" class="headerlink" title="分发 event，定时处理"></a>分发 event，定时处理</h3><p>|– virEventAddTimeout(virObjectEventTimer, …)<br>    |– virObjectEventStateFlush<br>        |– virObjectEventStateQueueDispatch(state, tempQueue, state-&gt;callbacks)<br>            |– virObjectEventStateDispatchCallbacks                           &lt;—- 找合适的callback，处理event<br>                |– virObjectEventDispatchMatchCallback<br>                |– event-&gt;dispatch(cb-&gt;conn, event, cb-&gt;cb, cb-&gt;opaque);      &lt;—- callback处理事件<br>        |– virObjectEventCallbackListPurgeMarked(state-&gt;callbacks);<br>        |– virObjectEventStateCleanupTimer</p><h2 id="创建-DeviceAdded-Event-Class"><a href="#创建-DeviceAdded-Event-Class" class="headerlink" title="创建 DeviceAdded Event Class"></a>创建 DeviceAdded Event Class</h2><p>VIR_CLASS_NEW(virDomainEventDeviceAdded, virDomainEventClass)<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virDomainEventDeviceAddedClass.png" alt="virDomainEventDeviceAddedClass"></p><p>event-&gt;dispatch 一般都是 virDomainEventDispatchDefaultFunc 根据 event_id 分发，执行对应的函数<br><img src="https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virObjectEvent_dispatch.png" alt="event-&gt;dispatch"></p><p>VIR_DOMAIN_EVENT_ID_DEVICE_ADDED  &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  virConnectDomainEventDeviceAddedCallback</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>libvirt</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>libvirt</tag>
+      
+      <tag>event</tag>
       
     </tags>
     

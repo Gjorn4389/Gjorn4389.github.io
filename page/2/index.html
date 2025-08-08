@@ -224,15 +224,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2024/02/27/virtual/libvirt_event/" target="_self">
-          libvirt event
+        <a href="/2024/07/17/virtual/kvm_init/" target="_self">
+          kvm_init
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/27/virtual/libvirt_event/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/07/17/virtual/kvm_init/" target="_self">
         <div>
-          Event 事件机制事件注册virEventRegisterDefaultImpl 基于 poll 的事件注册 必须使用 virEventRunDefaultImpl 来处理事件  注册Event的方法 virevent.c|– virEventGLibRegisterOnce|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRem
+          kvm_init 函数 确定有多少个CPU：num_cpus[SMP, hotpluggable] KVMParkedVcpu { vcpu_id, kvm_fd } 列表记录vcpu 检查KVM版本 kvm创建虚机，返回一个fd：kvm_ioctl(s, KVM_CREATE_VM, type);
         </div>
       </a>
 
@@ -240,8 +240,71 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2024-02-27 13:33" pubdate>
-              2024-02-27
+            <time datetime="2024-07-17 13:33" pubdate>
+              2024-07-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/qemu/" class="category-chain-item">qemu</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/kvm/">#kvm</a>
+            
+              <a href="/tags/qemu/">#qemu</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/03/13/virtual/vcpu_hotplug/" target="_self">
+          VCPU Hotplug
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/13/virtual/vcpu_hotplug/" target="_self">
+        <div>
+          热插vcpu主要流程hotpluggable配置缺省值qemuDomainAttachDeviceqemuDomainAttachDeviceFlagsqemuDomainAttachDeviceLiveAndConfigqemuDomainAttachDeviceConfigvirDomainDefPostParsevirDomainDefPostParseCommonvirDomainVcpu
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-13 13:33" pubdate>
+              2024-03-13
             </time>
           </div>
         
@@ -273,7 +336,9 @@
             
               <a href="/tags/libvirt/">#libvirt</a>
             
-              <a href="/tags/event/">#event</a>
+              <a href="/tags/hotplug/">#hotplug</a>
+            
+              <a href="/tags/vcpu/">#vcpu</a>
             
           </div>
         
@@ -339,6 +404,69 @@
               <a href="/tags/hotplug/">#hotplug</a>
             
               <a href="/tags/memory/">#memory</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/02/27/virtual/libvirt_event/" target="_self">
+          libvirt event
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/27/virtual/libvirt_event/" target="_self">
+        <div>
+          Event 事件机制事件注册virEventRegisterDefaultImpl 基于 poll 的事件注册 必须使用 virEventRunDefaultImpl 来处理事件  注册Event的方法 virevent.c|– virEventGLibRegisterOnce|– virEventRegisterImpl: 注册了 HandleAdd、HandleUpdate、HandleRem
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-27 13:33" pubdate>
+              2024-02-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/libvirt/" class="category-chain-item">libvirt</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/libvirt/">#libvirt</a>
+            
+              <a href="/tags/event/">#event</a>
             
           </div>
         
@@ -716,133 +844,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/12/10/web_dev/CSS-Basic/" target="_self">
-          CSS Basic
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/10/web_dev/CSS-Basic/" target="_self">
-        <div>
-          CSS 整合自  Web前端零基础入门HTML5+CSS3基础教程 MDN WEb Docs CSS   层叠样式表，通过CSS可以设置网页中元素的样式 1 CSS语句1.1 基本语法编写位置  行内样式 只对一个标签生效 1&lt;p style=&quot;color: red;&quot;&gt;red&lt;/p&gt;   head标签中style标签 仅对于当前页面生效 123p &#
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-10 12:14" pubdate>
-              2023-12-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Web/" class="category-chain-item">Web</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Web/">#Web</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/12/10/virtual/virtio/VirtDevice/" target="_self">
-          Virt Device
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/10/virtual/virtio/VirtDevice/" target="_self">
-        <div>
-          模型演变 完全虚拟化: 根据硬件设备规范模拟，对Guest透明，不需要修改 Vhost方案: 将数据面迁移到内核空间 Virtio协议: 半虚拟化，使用Virtqueue传输数据 VT-d: Intel 在硬件层面提供支持，包含DMA重映射、中断重映射等安全方案 SR-IOV(Single Root I&#x2F;O Virtualization): 将一个PCIe设备虚拟成多个功能设备给不同虚机
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-10 09:26" pubdate>
-              2023-12-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/VirtMachine/" class="category-chain-item">VirtMachine</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/protocol/">#protocol</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

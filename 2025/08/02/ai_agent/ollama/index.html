@@ -16,22 +16,23 @@
   <meta name="author" content="Gjorn">
   <meta name="keywords" content="">
   
-    <meta name="description" content="安装 docker-compose apt install -y docker-cpmposePython 3.12中移除了 disutils模块，导致docker-compose异常：apt install python3-distutils  12curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;latest&#x2F;download&#x2F;docker-">
+    <meta name="description" content="docker 部署Ollama ollama + ollama webui   创建容器目录: mkdir &#x2F;srv&#x2F;docker&#x2F;ollama 创建容器: docker run -d --gpus&#x3D;all --name ollama -v &#x2F;srv&#x2F;docker&#x2F;ollama:&#x2F;root&#x2F;.ollama -p 11434:11434 ollama&#x2F;ollama 进入容器: docker exec">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker">
-<meta property="og:url" content="https://gjorn4389.github.io/2025/08/03/os_ops/docker/index.html">
+<meta property="og:title" content="deploy Ollama">
+<meta property="og:url" content="https://gjorn4389.github.io/2025/08/02/ai_agent/ollama/index.html">
 <meta property="og:site_name" content="HandBook">
-<meta property="og:description" content="安装 docker-compose apt install -y docker-cpmposePython 3.12中移除了 disutils模块，导致docker-compose异常：apt install python3-distutils  12curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;latest&#x2F;download&#x2F;docker-">
+<meta property="og:description" content="docker 部署Ollama ollama + ollama webui   创建容器目录: mkdir &#x2F;srv&#x2F;docker&#x2F;ollama 创建容器: docker run -d --gpus&#x3D;all --name ollama -v &#x2F;srv&#x2F;docker&#x2F;ollama:&#x2F;root&#x2F;.ollama -p 11434:11434 ollama&#x2F;ollama 进入容器: docker exec">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-08-03T07:33:26.000Z">
+<meta property="article:published_time" content="2025-08-02T05:33:26.000Z">
 <meta property="article:modified_time" content="2025-08-08T18:43:42.483Z">
 <meta property="article:author" content="Gjorn">
-<meta property="article:tag" content="docker">
+<meta property="article:tag" content="ai">
+<meta property="article:tag" content="Ollama">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>docker - HandBook</title>
+  <title>deploy Ollama - HandBook</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker"></span>
+            <span id="subtitle" data-typed-text="deploy Ollama"></span>
           
         </div>
 
@@ -208,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-08-03 15:33" pubdate>
-          2025年8月3日 下午
+        <time datetime="2025-08-02 13:33" pubdate>
+          2025年8月2日 下午
         </time>
       </span>
     
@@ -220,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          78 字
+          67 字
         
       </span>
     
@@ -268,30 +269,27 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">docker</h1>
+            <h1 id="seo-header">deploy Ollama</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h1><blockquote>
-<p><del><code>apt install -y docker-cpmpose</code></del><br>Python 3.12中移除了 <code>disutils</code>模块，导致docker-compose异常：<code>apt install python3-distutils</code></p>
+                <h1 id="docker-部署Ollama"><a href="#docker-部署Ollama" class="headerlink" title="docker 部署Ollama"></a>docker 部署Ollama</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/7463632184">ollama + ollama webui</a></p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64 &gt; /usr/local/bin/docker-compose<br>chmod +x /usr/local/bin/docker-compose<br></code></pre></td></tr></table></figure>
-
-<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><ol>
-<li>启动服务: <code>docker-compose up -d</code></li>
-<li>停止服务: <code>docker-compose stop</code></li>
-<li>删除服务: <code>docker-compose down</code></li>
-<li>重启服务: <code>docker-compose restart</code></li>
-<li>查看日志: <code>docker-compose logs</code></li>
-<li>进入容器: <code>docker-compose exec &lt;container_name&gt; /bin/bash</code></li>
-<li>查看容器状态: <code>docker-compose ps</code></li>
-<li>构建并启动: <code>docker-compose up --build -d</code></li>
+<ol>
+<li>创建容器目录: <code>mkdir /srv/docker/ollama</code></li>
+<li>创建容器: <code>docker run -d --gpus=all --name ollama -v /srv/docker/ollama:/root/.ollama -p 11434:11434 ollama/ollama</code></li>
+<li>进入容器: <code>docker exec -it ollama /bin/bash</code></li>
+<li>验证: <code>ollama</code></li>
 </ol>
-<h2 id="进入容器："><a href="#进入容器：" class="headerlink" title="进入容器："></a>进入容器：</h2><ol>
-<li><code>docker exec -it xv6-env /bin/bash</code>: 在容器中开启一个新的终端 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">install `fzf`, dsh + Tab to insert docker name</span><br>function dsh() &#123;<br>    local container=$&#123;1:-$(docker ps --format &#x27;&#123;&#123;.Names&#125;&#125;&#x27; | fzf)&#125;<br>    if [ -n &quot;$container&quot; ]; then<br>        docker exec -it &quot;$container&quot; /bin/bash<br>    else<br>        echo &quot;No container selected.&quot;<br>    fi<br>&#125;<br></code></pre></td></tr></table></figure></li>
-<li><code>docker attach xv6-env</code>: 进入容器当前执行的终端</li>
-</ol>
+<h2 id="使用-open-webui-访问ollama容器"><a href="#使用-open-webui-访问ollama容器" class="headerlink" title="使用 open-webui 访问ollama容器"></a>使用 open-webui 访问ollama容器</h2><p>创建<code>open-webui</code>容器: <code>docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v /srv/docker/open_webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main</code></p>
+<h2 id="单容器部署-open-webui-ollama"><a href="#单容器部署-open-webui-ollama" class="headerlink" title="单容器部署 open-webui + ollama"></a>单容器部署 open-webui + ollama</h2><p>创建聚合容器: <code>docker run -d -p 3000:8080 --gpus=all -v /srv/docker/ollama:/root/.ollama -v /srv/docker/open_webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama</code></p>
+<h1 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h1><h2 id="修改config"><a href="#修改config" class="headerlink" title="修改config"></a>修改config</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; EOF &gt; ~/.ollama/config.json<br>&#123;<br>    &quot;registry&quot;: &#123;<br>        &quot;mirrors&quot;: &#123;<br>            &quot;registry.ollama.ai&quot;: &quot;https://registry.ollama.ai&quot;<br>        &#125;<br>    &#125;<br>&#125;<br>EOF<br></code></pre></td></tr></table></figure>
+<h2 id="下载魔搭社区镜像"><a href="#下载魔搭社区镜像" class="headerlink" title="下载魔搭社区镜像"></a>下载魔搭社区镜像</h2><p><code>ollama pull modelscope.cn/unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF</code></p>
+<h2 id="命令行制定镜像源"><a href="#命令行制定镜像源" class="headerlink" title="命令行制定镜像源"></a>命令行制定镜像源</h2><p><code>ollama run deepseek-r1:7b --registry-mirror https://registry.ollama.ai</code></p>
+<h1 id="指定量化"><a href="#指定量化" class="headerlink" title="指定量化"></a>指定量化</h1><p><code>ollama run modelscope2ollama-registry.azurewebsites.net/qwen/Qwen2.5-7B-Instruct-gguf:Q8_0</code></p>
+<h1 id="指定模板"><a href="#指定模板" class="headerlink" title="指定模板"></a>指定模板</h1><p><code>ollama run modelscope2ollama-registry.azurewebsites.net/qwen/Qwen2.5-7B-Instruct-gguf:Q8_0--qwen2</code></p>
 
                 
               </div>
@@ -310,7 +308,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/utils/" class="category-chain-item">utils</a>
+  <a href="/categories/ai/" class="category-chain-item">ai</a>
   
   
 
@@ -325,7 +323,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/docker/" class="print-no-link">#docker</a>
+        <a href="/tags/ai/" class="print-no-link">#ai</a>
+      
+        <a href="/tags/Ollama/" class="print-no-link">#Ollama</a>
       
     </div>
   
@@ -337,8 +337,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker</div>
-      <div>https://gjorn4389.github.io/2025/08/03/os_ops/docker/</div>
+      <div>deploy Ollama</div>
+      <div>https://gjorn4389.github.io/2025/08/02/ai_agent/ollama/</div>
     </div>
     <div class="license-meta">
       
@@ -350,7 +350,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年8月3日</div>
+          <div>2025年8月2日</div>
         </div>
       
       
@@ -382,12 +382,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2025/08/02/ai_agent/llm/" title="deploy llm">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">deploy llm</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/08/03/ai_agent/voice/" title="voice">
-                        <span class="hidden-mobile">voice</span>
+                      <a href="/2025/07/27/os_ops/git/" title="git">
+                        <span class="hidden-mobile">git</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
