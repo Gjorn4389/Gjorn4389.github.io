@@ -42,3 +42,15 @@ tags:
 ## openclash
 
 按照机场教程搞一下就行
+
+
+# fnos
+
+## SRIOV直通核显
+在分配虚拟显卡后，还要在os内安装 `i915-sriov-dkms`
+
+## 扩展磁盘
+1. `fdisk` 创建分区
+2. `pvcreate /dev/sdax`
+3. 查看当前卷组: `vgdisplay`
+4. 扩展卷组: `vgextend <vg_name> /dev/sdb1`
