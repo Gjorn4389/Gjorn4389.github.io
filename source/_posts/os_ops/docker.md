@@ -6,8 +6,27 @@ tags:
     - docker
 ---
 
+# docker 基本命令
 
-# 安装 docker-compose
+## 进入容器：
+1. `docker exec -it xv6-env /bin/bash`: 在容器中开启一个新的终端
+    ```shell
+    # install `fzf`, dsh + Tab to insert docker name
+    function dsh() {
+        local container=${1:-$(docker ps --format '{{.Names}}' | fzf)}
+        if [ -n "$container" ]; then
+            docker exec -it "$container" /bin/bash
+        else
+            echo "No container selected."
+        fi
+    }
+    ```
+2. `docker attach xv6-env`: 进入容器当前执行的终端
+
+
+# docker-compose
+
+## 安装
 > ~~`apt install -y docker-cpmpose`~~
 > Python 3.12中移除了 `disutils`模块，导致docker-compose异常：`apt install python3-distutils`
 
@@ -26,18 +45,4 @@ chmod +x /usr/local/bin/docker-compose
 7. 查看容器状态: `docker-compose ps`
 8. 构建并启动: `docker-compose up --build -d`
 
-## 进入容器：
-1. `docker exec -it xv6-env /bin/bash`: 在容器中开启一个新的终端
-    ```shell
-    # install `fzf`, dsh + Tab to insert docker name
-    function dsh() {
-        local container=${1:-$(docker ps --format '{{.Names}}' | fzf)}
-        if [ -n "$container" ]; then
-            docker exec -it "$container" /bin/bash
-        else
-            echo "No container selected."
-        fi
-    }
-    ```
-2. `docker attach xv6-env`: 进入容器当前执行的终端
 
