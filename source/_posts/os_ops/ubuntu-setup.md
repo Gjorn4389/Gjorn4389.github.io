@@ -23,6 +23,7 @@ snap remove --purge firmware-updater
 snap remove --purge core22
 snap remove --purge snapd
 
+# dpkg --remove --force-remove-reinstreq firefox
 apt remove --auto-remove snapd
 rm -rf ~/snap/ /snap/ /var/lib/snapd/ /home/gjorn/snap/
 apt-mark manual snapd
@@ -33,6 +34,8 @@ apt update
 ```
 
 # 安装中文输入法
+
+## fcitx5
 `apt-get install -y fcitx5 fcitx5-configtool fcitx5-chinese-addons`
 `mkdir -p ~/.config/autostart`
 `touch  ~/.config/autostart/fcitx5.desktop`

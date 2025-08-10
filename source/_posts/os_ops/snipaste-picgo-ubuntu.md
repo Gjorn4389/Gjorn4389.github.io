@@ -64,7 +64,7 @@ sudo sysctl -p
 1. 部署docker
 2. 安装 elctron
     + 依赖: [build instructions linux](https://www.electronjs.org/docs/latest/development/build-instructions-linux)
-    +
+    + `apt install -y npm nodejs`
 3. `npm install --legacy-peer-deps`
 4. 修改代码
 ```patch

@@ -54,3 +54,39 @@ tags:
 2. `pvcreate /dev/sdax`
 3. 查看当前卷组: `vgdisplay`
 4. 扩展卷组: `vgextend <vg_name> /dev/sdb1`
+
+
+# bilisync
+> [官方教程](https://bili-sync.allwens.work/quick-start)
+
+## 部分配置
+```yml
+    # user: 1000:1000
+    volumes:
+      - /srv/docker/bilisync/config/:/app/.config/bili-sync
+      - /srv/docker/bilisync/upper_face/:/app/.config/bili-sync/upper_face
+      - /srv/docker/bilisync/Videos/:/home/amtoaer/HDDs/Videos/Bilibilis/
+```
+
+## 需要验证 `auth_token`
+![报错](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bilisync_authtoken_err.png)
+
+![前端认证状态](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bilisync_webui_authfront.png)
+
+```py
+import sqlite3
+
+conn = sqlite3.connect('/srv/docker/bilisync/bili-sync/data.sqlite')
+cursor=conn.cursor()
+cursor.execute("SELECT * FROM config")
+# <sqlite3.Cursor object at 0x75ae6ceabd40>
+for row in cursor.fetchall():
+    print(row)
+```
+![从data.sqlite获取auth_token](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bilisync_config_sql.png)
+
+## 添加配置
+> [bili配置说明](https://bili-sync.allwens.work/configuration)
+
+`window.localStorage.ac_time_value` 获取不到
+改为任一时间 `console.log(new Date().getTime())`
