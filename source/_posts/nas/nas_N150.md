@@ -61,6 +61,7 @@ tags:
 
 ## 部分配置
 ```yml
+    # 这个权限还挺重要
     # user: 1000:1000
     volumes:
       - /srv/docker/bilisync/config/:/app/.config/bili-sync
@@ -90,3 +91,9 @@ for row in cursor.fetchall():
 
 `window.localStorage.ac_time_value` 获取不到
 改为任一时间 `console.log(new Date().getTime())`
+
+## 添加视频
+
+收藏夹: 例如以下地址的`fid`
+`https://space.bilibili.com/4677045/favlist?fid=xxxxxxxxx&ftype=create&ctype=21`
+
