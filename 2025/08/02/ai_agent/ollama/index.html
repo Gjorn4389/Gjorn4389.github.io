@@ -24,7 +24,7 @@
 <meta property="og:description" content="docker 部署Ollama ollama + ollama webui   创建容器目录: mkdir &#x2F;srv&#x2F;docker&#x2F;ollama 创建容器: docker run -d --gpus&#x3D;all --name ollama -v &#x2F;srv&#x2F;docker&#x2F;ollama:&#x2F;root&#x2F;.ollama -p 11434:11434 ollama&#x2F;ollama 进入容器: docker exec">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-08-02T05:33:26.000Z">
-<meta property="article:modified_time" content="2025-08-08T18:43:42.483Z">
+<meta property="article:modified_time" content="2025-08-10T14:59:53.314Z">
 <meta property="article:author" content="Gjorn">
 <meta property="article:tag" content="ai">
 <meta property="article:tag" content="Ollama">
@@ -284,8 +284,9 @@
 <li>验证: <code>ollama</code></li>
 </ol>
 <h2 id="使用-open-webui-访问ollama容器"><a href="#使用-open-webui-访问ollama容器" class="headerlink" title="使用 open-webui 访问ollama容器"></a>使用 open-webui 访问ollama容器</h2><p>创建<code>open-webui</code>容器: <code>docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v /srv/docker/open_webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main</code></p>
-<h2 id="单容器部署-open-webui-ollama"><a href="#单容器部署-open-webui-ollama" class="headerlink" title="单容器部署 open-webui + ollama"></a>单容器部署 open-webui + ollama</h2><p>创建聚合容器: <code>docker run -d -p 3000:8080 --gpus=all -v /srv/docker/ollama:/root/.ollama -v /srv/docker/open_webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama</code></p>
+<h2 id="单容器部署-open-webui-ollama"><a href="#单容器部署-open-webui-ollama" class="headerlink" title="单容器部署 open-webui + ollama"></a>单容器部署 open-webui + ollama</h2><p>创建聚合容器: <code>docker run -d -p 3000:8080 --gpus=all -v /srv/docker/ollama:/root/.ollama -v /srv/docker/open_webui:/app/backend/data --name ollama --restart always ghcr.io/open-webui/open-webui:ollama</code></p>
 <h1 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h1><h2 id="修改config"><a href="#修改config" class="headerlink" title="修改config"></a>修改config</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; EOF &gt; ~/.ollama/config.json<br>&#123;<br>    &quot;registry&quot;: &#123;<br>        &quot;mirrors&quot;: &#123;<br>            &quot;registry.ollama.ai&quot;: &quot;https://registry.ollama.ai&quot;<br>        &#125;<br>    &#125;<br>&#125;<br>EOF<br></code></pre></td></tr></table></figure>
+
 <h2 id="下载魔搭社区镜像"><a href="#下载魔搭社区镜像" class="headerlink" title="下载魔搭社区镜像"></a>下载魔搭社区镜像</h2><p><code>ollama pull modelscope.cn/unsloth/Mistral-Small-3.1-24B-Instruct-2503-GGUF</code></p>
 <h2 id="命令行制定镜像源"><a href="#命令行制定镜像源" class="headerlink" title="命令行制定镜像源"></a>命令行制定镜像源</h2><p><code>ollama run deepseek-r1:7b --registry-mirror https://registry.ollama.ai</code></p>
 <h1 id="指定量化"><a href="#指定量化" class="headerlink" title="指定量化"></a>指定量化</h1><p><code>ollama run modelscope2ollama-registry.azurewebsites.net/qwen/Qwen2.5-7B-Instruct-gguf:Q8_0</code></p>
