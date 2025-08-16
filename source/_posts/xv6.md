@@ -24,8 +24,8 @@ tags:
 1. `entry.S`
     + 从 `_entry` 开始运行xv6，此时虚拟地址直接映射到物理地址
     + `kernel.ld` 将 xv6内核加载到 `0x80000000`，`0x0~0x80000000` 包含IO设备
-    + 设置栈(用于运行c代码)，stack0在`start.c`文件中声明
-    + 执行 start.c 中的 start()
+    + 设置栈(用于运行c代码)，stack0在`start.c`文件中声明，每个CPU的内核栈
+    + 执行 `start.c` 中的 `start()`
 2. `start.c`
     + 修改运行模式为 Machine 模式
     + 设置main函数的地址
@@ -36,12 +36,24 @@ tags:
     + 通过 `mret` 回到 Supervisor 模式
 3. `main.c`
     + 初始化设备、子系统
-    + `userinit` 执行 `initcode.S`
+    + `userinit` 将 `initcode` 用户进程写入内存
     + scheduler() 会调度到第一次个proc，即init
 4. `init.c`
-    + 创建 console
-    + 打开文件描述符
-    + 启动shell
+    + 创建 console、打开文件描述符
+    + 子进程: `exec("sh", argv)`
+    + 当前进程: `wait(0)`、重启sh
+
+## syscall lab attack
+> ![xv6_syscall_lab_atack_bug](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_syscall_lab_atack_bug.png)
+
+1. 在`uvmalloc` 和 `kalloc` 时没有清理刚分配的内存数据，所以可以从内存中读到上次使用的数据
+2. 即需要在进程2中申请到进程1的内存地址页，`secret`和`attack`是由`attacktest` fork 出来的
+3. 加debug日志:`secret` 中虚拟地址为`0xD000`物理页，在 `attack`进程中被map到虚拟地址`0x14000`
+
+![VA~PA映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_syscall_lab_secret_attack_addr_map.png)
+
+进一步地，**应该分析为什么是`0x14000`**，这就要去跟踪页表管理机制，可参考：
+[attack可视化解答](https://www.youtube.com/watch?v=8wq1BcXhjp4)
 
 # 页表
 
