@@ -59,7 +59,7 @@ tags:
 
 **术语**
 + PTE: Page Table Entry
-+ PPN: Physical Page Nuber
++ PPN: Physical Page Number
 + TLB: Translation Look-aside Buffer
 
 **页表用途**
