@@ -70,17 +70,22 @@ tags:
 > 内核将所有物理内存映射到其页表，因此可以直接对物理内存操作
 
 ### 虚拟地址转化步骤
-1. `offset` 12位：一个页表是4096字节，可以用12位二进制数字表示
-2. `index` 27位：每个PTE是8字节，一个页表可以储存512个PTE(9位)，index是三级页表(L1、L2、L3各9位)
-3. `PPN` 44位：Sv39 RISC-V 仅用到44位物理页码
+> va: `[EXT:25][pagetable:27][offset:12]`
+> pa: `[PPN:44][offset:12]`
+
+1. `offset`: 12位：一个页表是4096字节，可以用12位二进制数字表示
+2. `index`: 27位：每个PTE是8字节，一个页表可以储存512个PTE(9位)，index是三级页表(L1、L2、L3各9位)
+3. `PPN`: 44位：Sv39 RISC-V 仅用到44位物理页码，内存空间就是`2^56`大小
+4. `TLB`: `Translation Look-aside Buffer`
+
 ![虚拟地址转化成物理地址](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/vma2pma.png)
 ![RISC-V 地址转化](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/riscv_vma_translate.png)
+![虚拟地址flag](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_pgtbl_addr_flag.png)
 
 ### 内核使用
-1. `satp`寄存器: 存放根页表页在内存中的地址
+1. `satp`寄存器: 存放根页表页在内存中的地址(Root Pagetable)
 2. 每个 CPU 有独立的 `satp`寄存器，因此不同CPU的虚拟地址空间不同，但是使用同一个内核地址空间
 3. 切换进程就需要修改`satp`寄存器 ?
-
 
 ### 常见标记位
 + `PTE_V`: PTE是否存在，0表示不合法
@@ -93,21 +98,23 @@ tags:
 
 ![地址空间映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/va_space_2_pa_space.png)
 
-1. 物理地址 `0x8000000` 以下: 保留了设备接口，作为内存映射控制寄存器暴露给软件，通过这些特殊的物理地址与设备交互
+1. 物理地址 `0x8000000` 之前: 保留了设备接口，作为内存映射控制寄存器暴露给软件，通过这些特殊的物理地址与设备交互
 2. 内核的虚拟地址和物理地址一致，可以通过虚拟地址直接操作物理内存
     > 内核虚拟地址中非直接映射部分：
     > `trampoline page`: 虚拟地址最后一页
     > `guard page`: 进程的内核栈会有 guard page，防止栈溢出。不会映射到物理地址空间，PTE_V 不设置。
 3. 内核会给每个进程分配一个内核栈
     > 内核栈是在系统启动的时候就创建好的吗？对应的内核一直没使用？
+    ![kernel stack init](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_alloc_kernel_stack_code.png)
 
 ## 进程地址空间
-![进程地址空间](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/riscv_process_addr_space.png)
+> ![进程地址空间](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/riscv_process_addr_space.png)
 
 1. 不同进程的页表将用户地址转换为物理内存的不同页面，因此进程的内存互相隔离
 2. 进程的虚拟内存空间是连续的，对应的物理内存可以是非连续的
 3. 将虚拟地址的最后一页映射到trampoline page，所有地址空间都有一个单独的物理内存页
 4. 用户栈前一页是 guard page，防止栈溢出
+
 
 # trap 和 系统调用
 > cpu转交控制权: 系统调用、异常、设备中断，将其都称之为trap
@@ -174,6 +181,7 @@ tags:
 1. 内存换出，保存到磁盘中。
 2. 页面故障，将磁盘中存储的页面，读取到内存中。
 3. 内存页满之后，需要换出内存页表
+
 
 # 中断和设备驱动
 
