@@ -29,7 +29,7 @@ Terminal=false
 ## wayland无法trap F1 shortcut
 
 在gnome的shortcut list中添加
-![snipaste_shortcut_debian13_gnome](snipaste_shortcut_debian13_gnome.png)
+![snipaste_shortcut_debian13_gnome](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/snipaste_shortcut_debian13_gnome.png)
 
 # ~~flameshot ubuntu 截图工具~~
 ~~`sudo apt install flameshot`~~
