@@ -112,9 +112,6 @@ print(cudnn.is_available())  #返回True说明已经安装了cuDNN
 ## 新窗口生成在中央
 `gsettings set org.gnome.mutter center-new-windows true`
 
-## 修改字体大小
-`apt install -y 新窗口生成在中央`
-
 # 科学上网
 使用 clash tun 令chrome、terminal可以使用
 
@@ -188,7 +185,7 @@ sudo apt-get update
 ```shell
 sudo groupadd docker            #添加docker用户组
 sudo gpasswd -a $USER docker    #将登陆用户加入到docker用户组中
-newgrp docker                   #更新用户组
+sudo newgrp docker                   #更新用户组
 ```
 4. 安装vscode的扩展
 

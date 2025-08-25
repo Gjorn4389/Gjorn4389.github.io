@@ -56,4 +56,9 @@ add `whoami` in /etc/sudoers
     options nvidia NVreg_PreserveVideoMemoryAllocations=1
     ```
 
+# install GNOME extensions
+> `apt install gnome-shell-extensions`
 
+## appindicator-support
+Adds AppIndicator, KStatusNotifierItem and legacy Tray icons support to the Shell
+![appindicator-support demo](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/appindicator-support.png)

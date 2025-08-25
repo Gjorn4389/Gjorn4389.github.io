@@ -8,7 +8,7 @@ tags:
 ---
 
 # AppImage 缺少依赖
-`sudo apt install libfuse2 xclip`
+`sudo apt install libfuse2 wl-clipboard`
 
 
 # Snipaste
@@ -25,6 +25,11 @@ Exec=/path/to/snipaste/Snipaste-2.3.1.AppImage
 Icon=/path/to/snipaste/Snipaste.png
 Terminal=false
 ```
+
+## wayland无法trap F1 shortcut
+
+在gnome的shortcut list中添加
+![snipaste_shortcut_debian13_gnome](snipaste_shortcut_debian13_gnome.png)
 
 # ~~flameshot ubuntu 截图工具~~
 ~~`sudo apt install flameshot`~~
