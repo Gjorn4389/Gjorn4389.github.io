@@ -13,6 +13,7 @@ tags:
 
 # Snipaste
 > [Snipaste客户端]https://www.snipaste.com/download.html
+
 > 启动APP后可以从/tmp/.mount_SnipasXXXXX中找到png图标
 
 下载 AppImage 格式, 添加到 Applications
@@ -29,6 +30,7 @@ Terminal=false
 ## wayland无法trap F1 shortcut
 
 在gnome的shortcut list中添加`/path/Snipaste.AppImage snip`
+
 ![snipaste_debian13_gnome](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/snipaste_debian13_gnome.png)
 
 # ~~flameshot ubuntu 截图工具~~

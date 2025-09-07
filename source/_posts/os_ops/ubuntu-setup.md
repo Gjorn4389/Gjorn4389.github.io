@@ -106,7 +106,6 @@ from torch.backends import cudnn
 print(cudnn.is_available())  #返回True说明已经安装了cuDNN
 ```
 
-
 # gnome
 
 ## 新窗口生成在中央

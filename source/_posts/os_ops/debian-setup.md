@@ -32,7 +32,9 @@ add `whoami` in /etc/sudoers
 
 # install nvidia drivers
 > [debian wiki for install nvidia driver](https://wiki.debian.org/NvidiaGraphicsDrivers#Debian_13_.22Trixie.22)
+
 > [enable wayland after nvidia driver installed](https://askubuntu.com/questions/1403854/cant-use-wayland-with-nvidia-510-drivers-on-ubuntu-22-04-lts/1403999#1403999)
+
 > [install nvidia driver by run exec](https://www.cnblogs.com/pprp/p/9430836.html)
 
 1. change BIOS Setting: use IGD as first graphics card
@@ -61,4 +63,5 @@ add `whoami` in /etc/sudoers
 
 ## appindicator-support
 Adds AppIndicator, KStatusNotifierItem and legacy Tray icons support to the Shell
+
 ![appindicator-support demo](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/appindicator-support.png)
