@@ -22,6 +22,7 @@ tags:
     }
     ```
 2. `docker attach xv6-env`: 进入容器当前执行的终端
+3. `sudo chown -R $USER:$USER [PATH]`：修改文件所有权
 
 
 # docker-compose
