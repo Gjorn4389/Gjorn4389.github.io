@@ -120,8 +120,9 @@ print(cudnn.is_available())  #返回True说明已经安装了cuDNN
 在 `/etc/bash.bashrc` 中 `source /etc/custom/custom_func`
 
 > /etc/custom/custom_func
+> /etc/profile.d/custom_func
 ```shell
-#! /bin/bash
+#!/bin/bash
 
 function switch2windows() {
     echo "switch to windows"
