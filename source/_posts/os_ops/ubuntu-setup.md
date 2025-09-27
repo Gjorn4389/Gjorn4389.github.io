@@ -151,44 +151,6 @@ function releaseDpkgLock() {
 /dev/sdb1 /mnt/repo2 ntfs defaults 0 0
 ```
 
-# 安装docker开发环境
-1. 安装docker，按照docker官网查看就行
-`apt install -y docker`
-```shell
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-```
-2. 换国内源:
-    + `vim /etc/docker/daemon.json`
-        ```json
-        {
-            "registry-mirrors": [
-                "http://hub-mirror.c.163.com",
-                "https://mirror.aliyuncs.com",
-                "https://docker.mirrors.ustc.edu.cn"
-            ]
-        }
-        ```
-    + systemctl restart docker
-3. 用户添加docker权限，把用户添加到到docker组
-```shell
-sudo groupadd docker            #添加docker用户组
-sudo gpasswd -a $USER docker    #将登陆用户加入到docker用户组中
-sudo newgrp docker                   #更新用户组
-```
-4. 安装vscode的扩展
-
 # 自定义`term`打开终端
 ```shell
 function term() {
