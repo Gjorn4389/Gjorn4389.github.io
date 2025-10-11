@@ -40,6 +40,7 @@ function Handbook() {
 function dsh() {
     local container=${1:-$(docker ps --format '{{.Names}}' | fzf)}
     if [ -n "$container" ]; then
+        docker ps | grep $container || docker start $container
         docker exec -it "$container" /bin/bash
     else
         echo "No container selected."
