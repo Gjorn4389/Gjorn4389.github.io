@@ -31,7 +31,7 @@ Terminal=false
 
 在gnome的shortcut list中添加`/path/Snipaste.AppImage snip`
 
-![snipaste_debian13_gnome](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/snipaste_debian13_gnome.png)
+![snipaste_debian13_gnome](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/snipaste_debian13_gnome.png)
 
 # ~~flameshot ubuntu 截图工具~~
 ~~`sudo apt install flameshot`~~

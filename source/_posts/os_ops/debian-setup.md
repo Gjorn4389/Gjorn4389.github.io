@@ -64,4 +64,4 @@ add `whoami` in /etc/sudoers
 ## appindicator-support
 Adds AppIndicator, KStatusNotifierItem and legacy Tray icons support to the Shell
 
-![appindicator-support demo](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/appindicator-support.png)
+![appindicator-support demo](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/appindicator-support.png)

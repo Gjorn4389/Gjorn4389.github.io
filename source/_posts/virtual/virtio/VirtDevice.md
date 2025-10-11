@@ -23,7 +23,7 @@ TODO
 2. 由 BIOS(或UEFI) 在系统初始化，访问 `BAR` 统一划分地址空间
     > Q: 热插设备什么时候分配地址空间
 3. PCI拓扑关系： cpu <---> Host Bridge <---> pci bus <---> PCI Device
-    ![PCI拓扑关系](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/vfio/cpu_pci_topology.png)
+    ![PCI拓扑关系](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/vfio/cpu_pci_topology.png)
 4. 确定访问设备：管脚 `IDSEL` 选定目标 PCI 设备，仅需要确定 `Function Number` 和 `Registers Number`
 
 ## 模拟PCI设备配置空间
@@ -35,7 +35,7 @@ TODO
 
 ## 模拟PCI设备BAR
 1. `pci_get_mmio_block` 为PCI设备分配内存地址：内存对齐、记录 mmio_blocks 方便后续分配
-    ![kvmtool_pci_bar](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/kvmtool_pci_bar.png)
+    ![kvmtool_pci_bar](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/kvmtool_pci_bar.png)
 2. `device__register` 将设备注册到 rbtree上，根据 dev_num 来排序，方便检索
 
 # 设备透传
@@ -63,7 +63,7 @@ TODO
     + `VFIO_IOMMU_MAP_DMA`：在DMA重映射页表中建立映射关系
     + 内核通知外设进行DMA前，需要把虚拟地址转换为物理地址（通过dma_map的iova、vaddr）
     + 内核创建 IOMMU 的页表，会将VA转成PA，其中记录的是GPA到HPA的映射
-    ![kvmtool中的dma映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/kvmtool_dma_map.png)
+    ![kvmtool中的dma映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/kvmtool_dma_map.png)
 
 ## 中断重映射
 1. 背景：避免虚机向其他虚机发送恶意中断

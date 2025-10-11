@@ -9,7 +9,7 @@ tags:
 
 # mux machine状态机变化
 
-![mux_machine](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_mux_machine.png)
+![mux_machine](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/bond_3ad_mux_machine.png)
 
 
 1)         LACP_Activity: 端口在链路控制中的主从状态，0表示Passive, 1表示Active。
@@ -28,7 +28,7 @@ tags:
 
 8)         Expired: TRUE(1)表示Actor RX状态机处于超时状态，否则不在超时状态。
 
-![port_variables_definition](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bond_3ad_port_valiables_def.png)
+![port_variables_definition](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/bond_3ad_port_valiables_def.png)
 
 
 1. AD_MUX_DETACHED -> AD_MUX_WAITING: AD_PORT_SELECTED == True || AD_PORT_STANDBY == True

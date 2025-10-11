@@ -66,9 +66,9 @@ qemuProcessEventHandler ：添加线程池工作函数
 
 ## 创建 DeviceAdded Event Class
 VIR_CLASS_NEW(virDomainEventDeviceAdded, virDomainEventClass)
-![virDomainEventDeviceAddedClass](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virDomainEventDeviceAddedClass.png)
+![virDomainEventDeviceAddedClass](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/virDomainEventDeviceAddedClass.png)
 
 event->dispatch 一般都是 virDomainEventDispatchDefaultFunc 根据 event_id 分发，执行对应的函数
-![event->dispatch](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/virObjectEvent_dispatch.png)
+![event->dispatch](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/virObjectEvent_dispatch.png)
 
 VIR_DOMAIN_EVENT_ID_DEVICE_ADDED  <============>  virConnectDomainEventDeviceAddedCallback

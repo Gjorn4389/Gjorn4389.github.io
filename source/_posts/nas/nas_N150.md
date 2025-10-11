@@ -36,7 +36,7 @@ tags:
 
 可能是因为回来的TCP包 ip被改了。可以如下修改。
 
-![immortalwrt配置](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/immortalwrt_lan_firewall.png)
+![immortalwrt配置](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/immortalwrt_lan_firewall.png)
 
 
 ## openclash
@@ -70,9 +70,9 @@ tags:
 ```
 
 ## 需要验证 `auth_token`
-![报错](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bilisync_authtoken_err.png)
+![报错](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/bilisync_authtoken_err.png)
 
-![前端认证状态](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bilisync_webui_authfront.png)
+![前端认证状态](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/bilisync_webui_authfront.png)
 
 ```py
 import sqlite3
@@ -84,7 +84,7 @@ cursor.execute("SELECT * FROM config")
 for row in cursor.fetchall():
     print(row)
 ```
-![从data.sqlite获取auth_token](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/bilisync_config_sql.png)
+![从data.sqlite获取auth_token](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/bilisync_config_sql.png)
 
 ## 添加配置
 > [bili配置说明](https://bili-sync.allwens.work/configuration)

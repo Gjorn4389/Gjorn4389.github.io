@@ -17,7 +17,7 @@ tags:
 + 一个窗口: `make qemu-gdb`
 + 一个窗口: `gdb-multiarch -x .gdbinit`
 
-![gdb tips](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_gdb_tips.png)
+![gdb tips](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/xv6_gdb_tips.png)
 
 
 # xv6启动第一个进程
@@ -44,13 +44,13 @@ tags:
     + 当前进程: `wait(0)`、重启sh
 
 ## syscall lab attack
-> ![xv6_syscall_lab_atack_bug](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_syscall_lab_atack_bug.png)
+> ![xv6_syscall_lab_atack_bug](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/xv6_syscall_lab_atack_bug.png)
 
 1. 在`uvmalloc` 和 `kalloc` 时没有清理刚分配的内存数据，所以可以从内存中读到上次使用的数据
 2. 即需要在进程2中申请到进程1的内存地址页，`secret`和`attack`是由`attacktest` fork 出来的
 3. 加debug日志:`secret` 中虚拟地址为`0xD000`物理页，在 `attack`进程中被map到虚拟地址`0x14000`
 
-![VA~PA映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_syscall_lab_secret_attack_addr_map.png)
+![VA~PA映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/xv6_syscall_lab_secret_attack_addr_map.png)
 
 进一步地，**应该分析为什么是`0x14000`**，这就要去跟踪页表管理机制，可参考：
 [attack可视化解答](https://www.youtube.com/watch?v=8wq1BcXhjp4)
@@ -78,9 +78,9 @@ tags:
 3. `PPN`: 44位：Sv39 RISC-V 仅用到44位物理页码，内存空间就是`2^56`大小
 4. `TLB`: `Translation Look-aside Buffer`
 
-![虚拟地址转化成物理地址](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/vma2pma.png)
-![RISC-V 地址转化](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/riscv_vma_translate.png)
-![虚拟地址flag](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_pgtbl_addr_flag.png)
+![虚拟地址转化成物理地址](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/vma2pma.png)
+![RISC-V 地址转化](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/riscv_vma_translate.png)
+![虚拟地址flag](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/xv6_pgtbl_addr_flag.png)
 
 ### 内核使用
 1. `satp`寄存器: 存放根页表页在内存中的地址(Root Pagetable)
@@ -96,7 +96,7 @@ tags:
 
 ## 内核地址空间
 
-![地址空间映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/va_space_2_pa_space.png)
+![地址空间映射](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/va_space_2_pa_space.png)
 
 1. 物理地址 `0x8000000` 之前: 保留了设备接口，作为内存映射控制寄存器暴露给软件，通过这些特殊的物理地址与设备交互
 2. 内核的虚拟地址和物理地址一致，可以通过虚拟地址直接操作物理内存
@@ -105,10 +105,10 @@ tags:
     > `guard page`: 进程的内核栈会有 guard page，防止栈溢出。不会映射到物理地址空间，PTE_V 不设置。
 3. 内核会给每个进程分配一个内核栈
     > 内核栈是在系统启动的时候就创建好的吗？对应的内核一直没使用？
-    ![kernel stack init](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/xv6_alloc_kernel_stack_code.png)
+    ![kernel stack init](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/xv6_alloc_kernel_stack_code.png)
 
 ## 进程地址空间
-> ![进程地址空间](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/source/images/riscv_process_addr_space.png)
+> ![进程地址空间](https://raw.githubusercontent.com/Gjorn4389/Gjorn4389.github.io/main/images/riscv_process_addr_space.png)
 
 1. 不同进程的页表将用户地址转换为物理内存的不同页面，因此进程的内存互相隔离
 2. 进程的虚拟内存空间是连续的，对应的物理内存可以是非连续的
