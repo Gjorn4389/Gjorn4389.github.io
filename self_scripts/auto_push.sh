@@ -21,5 +21,5 @@ fi
 echo "git pull done"
 
 # 推送到GitHub
-git push origin main
+git push
 echo "git push done"
